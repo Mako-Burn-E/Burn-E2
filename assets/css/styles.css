@@ -46,7 +46,7 @@ a { color: var(--flame-yellow); text-decoration: none; }
 
 section { margin: 56px 0; }
 .section-title { font-family: 'Inter', sans-serif; font-weight: 900; color: var(--flame-yellow); font-size: clamp(26px, 3vw, 40px); margin: 0 0 8px; }
-.section-subtitle{ margin: 6px 0 12px; color: var(--ash-gray); max-width: 80ch; }
+.section-subtitle{ margin: 6px 0 12px; color: var(--ash-gray); max-width: 100ch; }
 .card { background: var(--obsidian-brown); border-radius: 16px; border: 1px solid var(--card-border); padding: 18px; box-shadow: 0 0 0 rgba(0,0,0,0); transition: transform .2s ease, box-shadow .2s ease; }
 .card:hover { transform: translateY(-2px); box-shadow: 0 0 26px 6px var(--ember-glow); }
 
@@ -129,3 +129,47 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
   .ledger-grid { grid-template-columns: 1fr; }
   .launch-grid { grid-template-columns: 1fr; }
 }
+
+/* Fill ~75% width and center the tab row */
+.tabs .tablist {
+  width: 75%;
+  margin: 0 auto;              /* centers the row */
+  justify-content: space-between;
+}
+
+/* Stretch each tab to share space evenly */
+.tabs .tablist button {
+  flex: 1 1 0;                 /* all four grow evenly */
+  text-align: center;
+  min-width: 160px;            /* keeps them readable on smaller screens */
+}
+
+/* Add constant ember glow to the Grab $BURN-E button */
+#buyBtn {
+  box-shadow: 0 0 28px 4px rgba(255,122,26,0.45);  /* soft orange glow */
+  transition: box-shadow .3s ease, transform .2s ease;
+}
+
+#buyBtn:hover {
+  box-shadow: 0 0 36px 8px rgba(255,122,26,0.7);   /* brighter on hover */
+  transform: translateY(-1px);
+}
+
+#buyBtn {
+  background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow));
+  color: #1E1A1F;                         /* dark lettering over bright background */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 122, 26, 0.6);
+  box-shadow: 0 0 28px 6px rgba(255,122,26,0.45);
+}
+
+#buyBtn:hover {
+  box-shadow: 0 0 36px 10px rgba(255,122,26,0.75);
+  transform: translateY(-1px);
+}
+
+/* Hide FABs on desktops, show on small screens */
+@media (min-width: 961px) {
+  .fab-wrap { display: none; }
+}
+
