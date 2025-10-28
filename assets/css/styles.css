@@ -173,3 +173,18 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
   .fab-wrap { display: none; }
 }
 
+/* --- FAQ Styling --- */
+.faq-section h4 {
+  color: var(--flame-yellow);          /* bright yellow for questions */
+  margin-top: 20px;
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+.faq-section p {
+  font-style: italic;                  /* softer tone for answers */
+  color: var(--ash-gray);              /* lighter gray contrast */
+  margin-left: 8px;
+  line-height: 1.6;
+}
+
