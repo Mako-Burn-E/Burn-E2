@@ -335,3 +335,56 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
   /* Optional: hide floating buttons on mobile */
   /* .fab-wrap { display: none; } */
 }
+
+/* --- Global Tab Readability --- */
+.tabpanel.prose {
+  line-height: 1.7;
+  font-size: 15.5px;
+  color: var(--ash-gray);
+  text-align: left;
+  padding: 18px 22px;
+  max-width: 800px;
+  margin: 0 auto;                     /* centers all tab text */
+}
+
+.tabpanel.prose h3,
+.tabpanel.prose h4 {
+  color: var(--flame-yellow);
+  font-weight: 800;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.tabpanel.prose p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.tabpanel.prose ul,
+.tabpanel.prose ol {
+  margin: 0 0 14px 24px;
+  line-height: 1.6;
+}
+
+.tabpanel.prose strong {
+  color: var(--flame-yellow);
+}
+
+.tabpanel.prose em {
+  color: var(--ember-orange);
+}
+
+/* Optional: subtle glow divider between major sections */
+.tabpanel.prose h3::after {
+  content: "";
+  display: block;
+  margin-top: 8px;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ember-orange), transparent);
+  border-radius: 999px;
+  opacity: 0.6;
+}
+
