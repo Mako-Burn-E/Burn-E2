@@ -836,3 +836,66 @@ img, video, canvas, svg {
     max-width: 400px;
   }
 }
+
+/* === Launch section width + centering === */
+#launch {
+  width: 100%;
+  max-width: 92vw;
+  margin: 0 auto;
+}
+
+/* Constrain the text + buttons together */
+#launch .launch-inner {
+  max-width: 720px;          /* nice readable width on desktop */
+  margin: 0 auto;
+}
+
+/* Keep the card from bleeding wider than the section */
+#launch .card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Buttons look centered and crisp */
+#launch .cta-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+/* Mobile tuning */
+@media (max-width: 960px) {
+  #launch .launch-grid {
+    grid-template-columns: 1fr;    /* stack on phones */
+    justify-items: center;
+  }
+
+  #launch .launch-inner {
+    max-width: 100%;
+    padding: 0 4vw;                /* same side padding as the section */
+    text-align: center;
+  }
+
+  #launch .meta {
+    margin: 6px auto 10px;
+    line-height: 1.45;
+  }
+
+  /* Buttons: fit the same column width, no spill */
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    width: 92vw;
+    max-width: 420px;
+    box-sizing: border-box;
+  }
+
+  /* Optional: keep the robot sized nicely under the text */
+  #launch .robot {
+    width: 100%;
+    max-width: 360px;
+    margin: 10px auto 0;
+    display: block;
+  }
+}
