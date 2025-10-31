@@ -793,3 +793,46 @@ img, video, canvas, svg {
 @media (max-width: 960px) {
   .fab-wrap { display: none; }
 }
+
+/* === Fix "Ready to Join the Burn" section width on mobile === */
+#launch {
+  width: 100%;
+  max-width: 92vw;           /* match the rest of the mobile layout */
+  margin: 0 auto;            /* center the section */
+  padding: 0 4vw;            /* add breathing room */
+}
+
+#launch .card {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 960px) {
+  #launch .launch-grid {
+    display: block;
+    text-align: center;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  #launch .meta {
+    margin-bottom: 12px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  #launch .cta-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    width: 90vw;             /* consistent width with the rest of the mobile sections */
+    max-width: 400px;
+  }
+}
