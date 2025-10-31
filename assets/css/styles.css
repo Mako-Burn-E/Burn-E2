@@ -555,3 +555,52 @@ body > *:not(#sparks):not(.modal-backdrop) { position: relative; z-index: 1; }
   .modal.burne::before { animation: none; }
   .modal.show { transform: translate(-50%, -50%); }
 }
+
+/* ---- Mobile Fixes: Hero & Launch buttons ---- */
+@media (max-width: 960px) {
+
+  /* Hero Section */
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .hero h1 {
+    margin: 0 auto;
+    max-width: 90%;
+    font-size: clamp(36px, 8vw, 64px);
+    word-break: keep-all;
+  }
+  .hero p.tag {
+    margin: 0 auto;
+    max-width: 85%;
+    line-height: 1.4;
+  }
+
+  /* Prevent $BURN-E and Launch from breaking lines */
+  h1, h2, h3, p, a, button {
+    word-break: keep-all;
+    white-space: nowrap;
+  }
+
+  /* Launch Section Buttons */
+  #launch .cta-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    width: 80%;
+    max-width: 320px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Optional: tighten up the vertical spacing */
+  #launch {
+    padding-top: 20px;
+  }
+}
