@@ -137,19 +137,42 @@
     <button id="fabTop" class="fab ghost" title="Back to top">Top</button>
   </div>
 
-  <!-- Subscribe modal -->
-  <div class="modal-backdrop" id="subscribeBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-labelledby="subscribeTitle" aria-modal="true">
-      <h3 id="subscribeTitle">Get launch updates first</h3>
-      <p>Subscribe for $BURN-E launch alerts, dApp updates, and weekly winner recaps.</p>
-      <form class="row" id="subscribeForm" action="#" method="POST">
-        <input type="email" name="email" placeholder="your@email.com" required />
-        <button class="primary" type="submit">Subscribe</button>
-        <button class="ghost" type="button" id="subscribeClose">Not now</button>
-      </form>
-      <div class="small">We’ll only email important updates. Unsubscribe anytime.</div>
+  <!-- =========================
+     SUBSCRIBE POPUP (Burn-E)
+     ========================= -->
+<div class="modal-backdrop" id="subscribeBackdrop" aria-hidden="true">
+  <div class="modal burne" role="dialog" aria-labelledby="subscribeTitle" aria-modal="true">
+    <!-- Decorative aura -->
+    <div class="modal-aura" aria-hidden="true"></div>
+
+    <!-- Close -->
+    <button id="subscribeClose" class="modal-close" aria-label="Close">×</button>
+
+    <!-- Header -->
+    <div class="modal-head">
+      <svg class="flame" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <path d="M12 2c2.5 3.5-.5 5 0 7s3-1 3 3-3.1 6-6 6a6 6 0 0 1-1-11c.5 2 2 3 2 4 1-1 1-3 0-5-.5-1 .5-2 2-4z" fill="currentColor"/>
+      </svg>
+      <h3 id="subscribeTitle">$BURN-E Weekly Alpha</h3>
+      <p class="subtitle">Get drops, winners, and burn milestones — straight from the forge.</p>
     </div>
+
+    <!-- Form -->
+    <form id="subscribeForm" method="POST">
+      <div class="field">
+        <label for="subscribeEmail">Email</label>
+        <input id="subscribeEmail" name="email" type="email" required placeholder="you@domain.com" />
+      </div>
+
+      <button id="subscribeSubmit" class="btn-ember" type="submit">Ignite my inbox</button>
+
+      <p class="trust">
+        No spam. Unsubscribe anytime. <a id="dontShowLink" href="#">Don’t show this again</a>
+      </p>
+    </form>
   </div>
+</div>
+
   <!-- Ember Sparks Background -->
 <canvas id="sparks"></canvas>
 
