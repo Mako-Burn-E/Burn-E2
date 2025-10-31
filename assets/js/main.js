@@ -296,12 +296,61 @@ function setupFab(){
   if (fabLaunch && CFG?.launch_url){ fabLaunch.href = CFG.launch_url; }
 }
 
-// --- Subscribe modal ---
-function setupModal() {
+// --- Email Subscribe Modal ---
+// (1st popup after 30s, 2nd popup 5 min after dismissal, max 2 total)
+const MODAL_KEY = 'subscribe_shown_count';
+const SHOW_LIMIT = 2;               // maximum popups per visitor
+const FIRST_DELAY_MS = 30000;       // 30 seconds
+const RESHOW_DELAY_MS = 300000;     // 5 minutes = 300,000 ms
+
+function getModalCount() {
+  return parseInt(localStorage.getItem(MODAL_KEY) || '0', 10);
+}
+function canShowModal() {
+  return getModalCount() < SHOW_LIMIT;
+}
+function markModalShown() {
+  const n = getModalCount();
+  localStorage.setItem(MODAL_KEY, String(n + 1));
+}
+function showSubscribeModal() {
   const backdrop = document.getElementById('subscribeBackdrop');
+  if (!backdrop || !canShowModal()) return;
+  backdrop.style.display = 'flex';
+  backdrop.setAttribute('aria-hidden', 'false');
+  markModalShown();
+}
+function hideSubscribeModal() {
+  const backdrop = document.getElementById('subscribeBackdrop');
+  if (!backdrop) return;
+  backdrop.style.display = 'none';
+  backdrop.setAttribute('aria-hidden', 'true');
+}
+function scheduleSubscribeModal(delayMs) {
+  if (!canShowModal()) return;
+  setTimeout(showSubscribeModal, delayMs);
+}
+
+function setupModal() {
   const btnClose = document.getElementById('subscribeClose');
   const form = document.getElementById('subscribeForm');
-  setTimeout(() => { if (backdrop) { backdrop.style.display = 'flex'; backdrop.setAttribute('aria-hidden','false'); } }, 30000);
-  if (btnClose) btnClose.addEventListener('click', () => { backdrop.style.display = 'none'; backdrop.setAttribute('aria-hidden','true'); });
-  if (form) form.addEventListener('submit', () => { setTimeout(() => { if (backdrop) backdrop.style.display = 'none'; }, 500); });
+
+  // First popup after 30 seconds
+  scheduleSubscribeModal(FIRST_DELAY_MS);
+
+  // If user closes popup: schedule second popup after 5 minutes
+  if (btnClose) {
+    btnClose.addEventListener('click', () => {
+      hideSubscribeModal();
+      scheduleSubscribeModal(RESHOW_DELAY_MS);
+    });
+  }
+
+  // If user submits the form, hide and never show again
+  if (form) {
+    form.addEventListener('submit', () => {
+      localStorage.setItem(MODAL_KEY, String(SHOW_LIMIT));
+      setTimeout(hideSubscribeModal, 500);
+    });
+  }
 }
