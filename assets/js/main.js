@@ -296,11 +296,15 @@ function setupFab(){
   if (fabLaunch && CFG?.launch_url){ fabLaunch.href = CFG.launch_url; }
 }
 
-// --- Email Subscribe Modal (30s first, 5min re-show) ---
+/* ============================================
+   Email Subscribe Modal (Burn-E behavior)
+   First show: 30s   |   Re-show: 5m after close
+   Max total shows per visitor: 2
+   ============================================ */
 const MODAL_KEY = 'subscribe_shown_count';
 const SHOW_LIMIT = 2;
-const FIRST_DELAY_MS = 30000;      // 30 seconds
-const RESHOW_DELAY_MS = 300000;    // 5 minutes
+const FIRST_DELAY_MS = 30000;    // 30 seconds
+const RESHOW_DELAY_MS = 300000;  // 5 minutes
 
 function getModalCount() {
   return parseInt(localStorage.getItem(MODAL_KEY) || '0', 10);
@@ -328,7 +332,7 @@ function hideSubscribeModal() {
   setTimeout(() => {
     backdrop.style.display = 'none';
     backdrop.setAttribute('aria-hidden', 'true');
-  }, 400); // wait for fade-out
+  }, 400);
 }
 
 function scheduleSubscribeModal(delayMs) {
@@ -338,19 +342,33 @@ function scheduleSubscribeModal(delayMs) {
 function setupModal() {
   const btnClose = document.getElementById('subscribeClose');
   const form = document.getElementById('subscribeForm');
+  const dont = document.getElementById('dontShowLink');
 
   // First popup after 30 seconds
   scheduleSubscribeModal(FIRST_DELAY_MS);
 
-  // On close → re-show after 5 minutes
+  // On close: re-show once after 5 minutes
   btnClose?.addEventListener('click', () => {
     hideSubscribeModal();
     scheduleSubscribeModal(RESHOW_DELAY_MS);
   });
 
-  // On form submit → never show again
+  // On "Don't show again": stop future popups
+  dont?.addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.setItem(MODAL_KEY, String(SHOW_LIMIT));
+    hideSubscribeModal();
+  });
+
+  // On submit: lock out future popups
   form?.addEventListener('submit', () => {
     localStorage.setItem(MODAL_KEY, String(SHOW_LIMIT));
     hideSubscribeModal();
   });
 }
+
+/* IMPORTANT: Ensure setupModal() is called on DOM ready
+   If you already have a DOMContentLoaded handler, just call setupModal() inside it. */
+document.addEventListener('DOMContentLoaded', () => {
+  try { setupModal(); } catch (e) { console.error(e); }
+});
