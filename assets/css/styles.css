@@ -579,12 +579,6 @@ body > *:not(#sparks):not(.modal-backdrop) { position: relative; z-index: 1; }
     line-height: 1.4;
   }
 
-  /* Prevent $BURN-E and Launch from breaking lines */
-  h1, h2, h3, p, a, button {
-    word-break: keep-all;
-    white-space: nowrap;
-  }
-
   /* Launch Section Buttons */
   #launch .cta-row {
     flex-direction: column;
@@ -602,5 +596,107 @@ body > *:not(#sparks):not(.modal-backdrop) { position: relative; z-index: 1; }
   /* Optional: tighten up the vertical spacing */
   #launch {
     padding-top: 20px;
+  }
+}
+/* ========== MOBILE SAFETY PATCH (stop horizontal overflow) ========== */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;               /* hide any accidental overflow */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;           /* padding/borders don’t expand widths */
+}
+
+/* Media, canvas, images never exceed screen width */
+img, video, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The sparks canvas must never force scroll */
+#sparks {
+  width: 100vw;                     /* viewport width */
+  height: 100vh;                    /* viewport height */
+  position: fixed;
+  left: 0; top: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content containers stay within viewport */
+.wrap, .hero, .tabs, .launch-grid, .ledger-grid, .kpi-grid, .tabpanel {
+  max-width: 100%;
+  overflow-wrap: anywhere;          /* break long words/URLs safely */
+}
+
+/* ========== HERO (mobile centering & no jank) ========== */
+@media (max-width: 960px) {
+  .hero { text-align: center; padding: 28px 18px; margin: 0 auto; }
+  .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .hero h1 { margin: 0 auto; max-width: 92vw; font-size: clamp(34px, 8vw, 48px); }
+  .hero p { margin: 0 auto; max-width: 90vw; line-height: 1.4; }
+
+  /* Don’t globally prevent wrapping—only protect the brand name */
+  .nobr { white-space: nowrap; }    /* use <span class="nobr"> for words to keep together */
+}
+
+/* OPTIONAL: make $BURN-E unbreakable via class (use in HTML) */
+.brand-lock { white-space: nowrap; }
+
+/* ========== LAUNCH SECTION (buttons centered, no wrap, no overflow) ========== */
+@media (max-width: 960px) {
+  #launch .launch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+  }
+
+  #launch .cta-row {
+    display: flex;
+    flex-wrap: nowrap;              /* prevent the weird second-line wrap */
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 0 12px;
+    margin: 6px 0 0;
+  }
+
+  /* Buttons: content-based width but capped to viewport */
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 16px;
+    white-space: nowrap;            /* keep the label on one line */
+    width: auto;                    /* don’t force full width */
+    max-width: 90vw;                /* never exceed screen width */
+    flex: 0 1 320px;                /* nice target size, shrink if needed */
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* If your two buttons still feel tight on tiny phones, stack them: */
+  /* #launch .cta-row { flex-direction: column; } */
+}
+
+/* ========== TABS (mobile) ========== */
+@media (max-width: 960px) {
+  .tablist {
+    display: flex;
+    flex-wrap: wrap;                /* allow wrap instead of overflowing */
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 0 8px;
+  }
+  .tablist button {
+    min-width: 140px;
+    flex: 0 1 auto;
   }
 }
