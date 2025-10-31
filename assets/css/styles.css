@@ -440,3 +440,118 @@ body > *:not(#sparks):not(.modal-backdrop) {
 .modal-backdrop {
   z-index: 200 !important;
 }
+
+/* =========================
+   Burn-E Modal (visuals)
+   ========================= */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  display: none;
+  align-items: center; justify-content: center;
+  background:
+    radial-gradient(1200px 600px at 50% 60%, rgba(255,122,26,0.08), transparent 60%),
+    rgba(5,5,7,0.60);
+  backdrop-filter: blur(6px);
+  z-index: 200; /* sits above content; modal itself sits above this */
+}
+
+.modal.burne {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 440px);
+  background: rgba(18, 16, 20, 0.96);
+  color: #fff;
+  border-radius: 16px;
+  padding: 26px 24px 22px;
+  z-index: 201;
+  box-shadow:
+    0 0 22px rgba(255,122,26,0.35),
+    inset 0 0 0 1px rgba(255, 200, 120, 0.15);
+  opacity: 0;
+  transition: opacity .6s ease, transform .6s ease;
+}
+.modal.show { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+
+.modal.burne::before {
+  content:"";
+  position:absolute; inset:-2px; border-radius:18px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255,122,26,.0),
+    rgba(255,122,26,.35),
+    rgba(255,200,120,.55),
+    rgba(255,122,26,.35),
+    rgba(255,122,26,.0)
+  );
+  filter: blur(10px);
+  opacity:.75;
+  z-index:-1;
+  animation: glowSpin 6s linear infinite;
+}
+@keyframes glowSpin { to { transform: rotate(360deg); } }
+
+.modal-aura {
+  position:absolute; inset:10px; border-radius:12px; z-index:-1; pointer-events:none;
+  background: radial-gradient(280px 180px at 70% 10%, rgba(255,200,120,0.10), transparent 60%),
+              radial-gradient(360px 200px at 30% 90%, rgba(255,122,26,0.10), transparent 60%);
+}
+
+/* Header + close */
+.modal-head { text-align:center; margin-bottom:10px; }
+.modal-head .flame { color: var(--ember-orange, #FF7A1A); filter: drop-shadow(0 0 8px rgba(255,122,26,.6)); }
+.modal-head h3 { margin: 8px 0 4px; font-size: 22px; font-weight: 900; letter-spacing:.2px; color: var(--flame-yellow,#FFD48A); }
+.modal-head .subtitle { margin:0; color: var(--ash-gray,#B5B1B8); font-size: 14.5px; }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,200,120,.4);
+  background: rgba(30,26,31,.6);
+  color: #FFD48A; font-size: 20px; line-height: 28px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+.modal-close:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 14px rgba(255,122,26,.5);
+  background: rgba(50,35,20,.75);
+}
+
+/* Fields + CTA */
+.field { display:flex; flex-direction:column; gap:6px; margin: 14px 0 16px; }
+.field label { font-size:12px; color: #CFCAD5; letter-spacing:.2px; }
+.field input {
+  padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,200,120,.25);
+  background: rgba(12,10,13,.9); color:#fff;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.field input:focus {
+  border-color: rgba(255,200,120,.8);
+  box-shadow: 0 0 0 3px rgba(255,122,26,.25);
+}
+
+.btn-ember {
+  width: 100%; padding: 12px 16px; border-radius: 12px; border: 0;
+  font-weight: 900; font-size: 15.5px; cursor: pointer;
+  color: #1E1A1F;
+  background: linear-gradient(90deg, var(--ember-orange,#FF7A1A), var(--flame-yellow,#FFD48A));
+  box-shadow: 0 0 22px 4px rgba(255,122,26,.45);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn-ember:hover { transform: translateY(-1px);
+  box-shadow: 0 0 30px 8px rgba(255,122,26,.65);
+  filter: saturate(1.1);
+}
+
+.trust { margin: 10px 0 0; text-align:center; font-size: 12.5px; color:#CFCAD5; }
+.trust a { color: var(--flame-yellow,#FFD48A); text-decoration: underline; }
+
+/* Stacking fix with sparks canvas */
+body > *:not(#sparks):not(.modal-backdrop) { position: relative; z-index: 1; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal.burne::before { animation: none; }
+  .modal.show { transform: translate(-50%, -50%); }
+}
