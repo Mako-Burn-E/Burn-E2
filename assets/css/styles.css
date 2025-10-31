@@ -118,8 +118,17 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
   width: 90%;
   max-width: 400px;
   color: #fff;
-  z-index: 201; /* keep above sparks */
+  z-index: 201;
+  opacity: 0;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
+
+/* fade-in once shown */
+.modal.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.02);
+}
+
 
 /* --- Floating Action Buttons --- */
 .fab-wrap{ position: fixed; right: 14px; bottom: 14px; display: grid; gap: 10px; z-index: 120; }
