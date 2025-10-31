@@ -150,5 +150,69 @@
       <div class="small">We’ll only email important updates. Unsubscribe anytime.</div>
     </div>
   </div>
+  <!-- Ember Sparks Background -->
+<canvas id="sparks"></canvas>
+
+<!-- Scroll Reveal & Sparks Scripts -->
+<script>
+/* --- Simple Scroll Reveal --- */
+document.addEventListener('scroll', () => {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const visible = rect.top < window.innerHeight * 0.85;
+    el.classList.toggle('visible', visible);
+  });
+});
+
+/* --- Ember Sparks --- */
+const canvas = document.getElementById('sparks');
+const ctx = canvas.getContext('2d');
+let sparks = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function makeSpark() {
+  const x = Math.random() * canvas.width;
+  const y = canvas.height + 10;
+  const speed = Math.random() * 1 + 0.5;
+  const size = Math.random() * 2 + 1;
+  const life = Math.random() * 120 + 60;
+  sparks.push({x, y, speed, size, life});
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = sparks.length - 1; i >= 0; i--) {
+    const s = sparks[i];
+    s.y -= s.speed;
+    s.life--;
+    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
+    grad.addColorStop(0, 'rgba(255,180,80,1)');
+    grad.addColorStop(1, 'rgba(255,122,26,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+    ctx.fill();
+    if (s.life <= 0) sparks.splice(i, 1);
+  }
+  if (Math.random() < 0.3) makeSpark();
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* Keep canvas fixed behind content */
+canvas.style.position = 'fixed';
+canvas.style.left = 0;
+canvas.style.top = 0;
+canvas.style.pointerEvents = 'none';
+canvas.style.zIndex = 0;
+canvas.style.width = '100%';
+canvas.style.height = '100%';
+</script>
 </body>
 </html>
