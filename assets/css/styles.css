@@ -899,3 +899,43 @@ img, video, canvas, svg {
     display: block;
   }
 }
+/* ===== DESKTOP RESTORE: keep your original look ===== */
+@media (min-width: 961px) {
+  /* Let the page's existing wrap control the width again */
+  #launch {
+    width: auto;
+    max-width: none;
+    margin: 0 auto;
+  }
+
+  /* Two-column grid like before */
+  #launch .launch-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* content + art */
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* Content column behaves like before */
+  #launch .launch-inner {
+    max-width: 720px;   /* readable column */
+    margin: 0;          /* no forced centering on desktop */
+    padding: 0;         /* no extra mobile padding */
+    text-align: left;
+  }
+
+  /* Buttons auto-size, don’t stretch */
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    width: auto !important;
+    max-width: none;
+  }
+
+  /* Keep the robot visible and sized naturally */
+  #launch .robot {
+    display: block;
+    max-width: 520px;
+    width: 100%;
+    margin: 0;
+  }
+}
