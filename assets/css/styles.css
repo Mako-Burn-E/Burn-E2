@@ -939,3 +939,45 @@ img, video, canvas, svg {
     margin: 0;
   }
 }
+/* ===== DESKTOP FIX: restore launch width & grid (>= 961px) ===== */
+@media (min-width: 961px) {
+  /* Keep launch section within the same page width as other sections */
+  #launch {
+    width: 100%;
+    max-width: 1200px;       /* match your site’s content width */
+    margin: 0 auto;          /* center the section */
+    padding: 0 24px;         /* same side padding as elsewhere */
+  }
+
+  /* Bring back the original two-column look (content + art) */
+  #launch .launch-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* tweakable ratio */
+    align-items: center;
+    gap: 28px;
+  }
+
+  /* Content column: natural left align on desktop */
+  #launch .launch-inner {
+    max-width: 720px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  /* Buttons: auto-size on desktop (no stretching) */
+  #launch .btn-primary,
+  #launch .btn-secondary {
+    width: auto !important;
+    max-width: none;
+  }
+
+  /* Robot art sizing */
+  #launch .robot {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    margin: 0;
+  }
+}
