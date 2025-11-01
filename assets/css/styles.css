@@ -64,17 +64,12 @@ section { margin: 56px 0; }
 .tabs { margin-top: 8px; }
 .tablist {
   display: flex;
-  flex-wrap: nowrap;          /* keeps all tabs in one line */
+  flex-wrap: nowrap;
   gap: 8px;
   border-bottom: 1px solid var(--card-border);
-  overflow-x: auto;           /* allows side-scrolling on smaller screens */
-  -webkit-overflow-scrolling: touch; /* smooth scroll for mobile */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
-
-.tablist button {
-  flex: 0 0 auto;             /* prevents buttons from shrinking */
-}
-
 .tablist button { background: transparent; border: 1px solid var(--card-border); color: var(--flame-yellow); padding: 10px 14px; border-radius: 12px 12px 0 0; font-weight: 700; cursor: pointer; }
 .tablist button[aria-selected='true'] { background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow)); color: #1E1A1F; border-color: transparent; }
 .tabpanel { display: none; padding: 16px; border: 1px solid var(--card-border); border-top: 0; border-radius: 0 12px 12px 12px; background: var(--obsidian-brown); }
@@ -143,139 +138,38 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
 }
 
 
-/* ===============================
-   BURN‑E PLAYBOOK: Chapters 1–4
-   Readability + Theming Restore
-   =============================== */
-
-/* Tab row: centered, breathable, ember hover */
-.tabs { margin-top: 16px; }
 .tabs .tablist {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
   border-bottom: 1px solid var(--card-border);
   padding-bottom: 8px;
-}
-.tabs .tablist button {
-  background: rgba(255,212,78,0.06);
-  border: 1px solid var(--card-border);
-  color: var(--flame-yellow);
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
-}
-.tabs .tablist button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 16px var(--ember-glow);
-  background: rgba(255,212,78,0.1);
-}
-.tabs .tablist button[aria-selected='true'] {
-  background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow));
-  color: #1E1A1F;
-  border-color: transparent;
-  text-shadow: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Panel container with obsidian card + soft ember edge */
-.tabpanel {
-  display: none;
-  padding: 18px;
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  background:
-    radial-gradient(800px 240px at 20% 0%, rgba(255,122,26,0.06), transparent 60%),
-    var(--obsidian-brown);
-}
-.tabpanel.active { display: block; }
 
-/* Prose readability — the "Burn‑E readability mode" */
-.tabpanel.prose {
-  line-height: 1.7;
-  font-size: 15.5px;
-  color: var(--ash-gray);
-  text-align: left;
-  padding: 18px 22px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.tabpanel.prose h3,
-.tabpanel.prose h4 {
-  color: var(--flame-yellow);
-  font-weight: 800;
-  margin-top: 24px;
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
-.tabpanel.prose p {
-  margin-bottom: 14px;
-  line-height: 1.7;
-}
-.tabpanel.prose ul,
-.tabpanel.prose ol {
-  margin: 0 0 14px 24px;
-  line-height: 1.6;
-}
-.tabpanel.prose strong { color: var(--flame-yellow); }
-.tabpanel.prose em { color: var(--ember-orange); }
+.tablist button { flex: 0 0 auto; }
 
-/* Ember divider under h3s */
-.tabpanel.prose h3::after {
-  content: "";
-  display: block;
-  margin-top: 8px;
-  width: 80px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--ember-orange), transparent);
-  border-radius: 999px;
-  opacity: 0.6;
-}
 
-/* Glow word highlights for inline emphasis */
-.glow-yellow {
-  color: var(--flame-yellow);
-  text-shadow: 0 0 8px rgba(255,212,78,0.6);
-  font-weight: 700;
+/* === Final precedence: tablist non-wrap === */
+.tablist {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--card-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
-.glow-orange {
-  color: var(--ember-orange);
-  text-shadow: 0 0 10px rgba(255,122,26,0.5);
-  font-weight: 700;
+.tabs .tablist {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
-.glow-red {
-  color: var(--burn-red);
-  text-shadow: 0 0 10px rgba(224,59,0,0.6);
-  font-weight: 700;
-}
-
-/* FAQ readability (questions pop, answers breathe) */
-.faq-section h4 {
-  color: var(--flame-yellow);
-  font-size: 18px;
-  font-weight: 800;
-  margin-top: 24px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 10px rgba(255,212,78,0.5);
-  letter-spacing: 0.5px;
-}
-.faq-section p {
-  color: var(--ash-gray);
-  line-height: 1.7;
-  font-size: 15.5px;
-  margin-left: 8px;
-  padding-left: 12px;
-  border-left: 2px solid rgba(255,122,26,0.4);
-  font-style: italic;
-}
-
-/* Mobile niceties */
-@media (max-width: 960px) {
-  .tabs .tablist { gap: 8px; }
-  .tabs .tablist button { min-width: 140px; padding: 10px 12px; }
-  .tabpanel { padding: 14px; }
-  .tabpanel.prose { padding: 16px 18px; }
-}
+.tablist button { flex: 0 0 auto; }
