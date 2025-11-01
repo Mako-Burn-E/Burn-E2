@@ -1,374 +1,294 @@
-const CONFIG_URL = "config.json";
+/* ================================
+   UTIL
+================================ */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    // Smooth in-page anchors
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const id = a.getAttribute('href').substring(1);
-        const el = document.getElementById(id);
-        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
-      });
-    });
-    setupTabs();
-    initSite();
-    setupModal();
-    document.getElementById('refreshBurns')?.addEventListener('click', () => refreshLedger(true));
-    document.getElementById('loadMoreBurns')?.addEventListener('click', () => loadMoreBurns());
-  } catch (e) {
-    console.error('Init error', e);
-  }
-});
+/* ================================
+   SMOOTH SCROLL TOP
+================================ */
+(() => {
+  const btn = $('#fabTop');
+  if (!btn) return;
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+})();
 
-let CFG = null;
-let burnsCursor = null;
+/* ================================
+   CTA LINKS (plug your real URLs)
+================================ */
+(() => {
+  const LINKS = {
+    launch: '#', // e.g., 'https://play.playdefi.org/burn-e/launch'
+    buy:    '#', // e.g., 'https://raydium.io/swap?input=SOL&output=BURN-E'
+    fuel:   '#'
+  };
 
-async function initSite() {
-  try {
-    const r = await fetch(CONFIG_URL, { cache: 'no-store' });
-    CFG = await r.json();
-  } catch (e) {
-    console.warn('Config fetch failed, using defaults (file:// likely)', e);
-    CFG = {
-      launch_url: "",
-      pump_url: "",
-      subscribe_action: "",
-      ledger_api: { metrics_url: "", burns_url: "", milestones_url: "" },
-      fallback_burn: { start_supply: 1000000000, goal_supply: 23000000, current_supply: 1000000000 },
-      fallback_ledger: { metrics: { start_supply: 1000000000, goal_supply: 23000000, current_supply: 1000000000, total_burned: 0, pct_to_goal: 0, weekly_prize_pot: 0 }, burns: [], milestones: [] }
-    };
-  }
+  const wire = (id, url) => {
+    const a = $(id);
+    if (a && url && url !== '#') a.href = url;
+  };
 
-  // CTAs
-  try {
-    const dappUrl = CFG.launch_url;
-    const pumpUrl = CFG.pump_url;
-    ['launchBtn','launchBtn2'].forEach(id => { const el = document.getElementById(id); if (el && dappUrl) el.href = dappUrl; });
-    const buyBtn = document.getElementById('buyBtn'); if (buyBtn && pumpUrl) buyBtn.href = pumpUrl;
-    const fuelBtn = document.getElementById('fuelBtn'); if (fuelBtn && pumpUrl) fuelBtn.href = pumpUrl;
-  } catch {}
+  wire('#launchBtn',  LINKS.launch);
+  wire('#launchBtn2', LINKS.launch);
+  wire('#fabLaunch',  LINKS.launch);
+  wire('#buyBtn',     LINKS.buy);
+  wire('#fuelBtn',    LINKS.fuel);
+})();
 
-  // Subscribe form
-  try {
-    const form = document.getElementById('subscribeForm');
-    if (form && CFG.subscribe_action) form.action = CFG.subscribe_action;
-  } catch {}
+/* ================================
+   TABS: FETCH & CACHE CONTENT
+   - Keeps Chapter 1–4 in one row (CSS handles nowrap)
+   - Loads from /assets/docs/{data-file}
+================================ */
+(() => {
+  const tablist = $('.tablist');
+  if (!tablist) return;
 
-  // Badge hide when live
-  try {
-    const badge = document.getElementById('prelaunchBadge');
-    const hasLiveLedger = (CFG?.ledger_api?.metrics_url || CFG?.burn_api_url);
-    if (badge) badge.style.display = hasLiveLedger ? 'none' : 'inline-block';
-  } catch {}
+  const buttons = $$('.tablist [role="tab"]', tablist);
+  const panels = $$('.tabpanel');
+  const cache = new Map();
 
-  await refreshLedger(false);
-  setupStepper();
-  setupFab();
-}
+  const setActive = (btn) => {
+    buttons.forEach(b => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+    panels.forEach(p => p.classList.remove('active'));
+    const panel = $('#' + btn.getAttribute('aria-controls'));
+    panel?.classList.add('active');
 
-function setupTabs() {
-  const tabs = document.querySelectorAll('[role="tab"]');
-  const panels = document.querySelectorAll('.tabpanel');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.setAttribute('aria-selected','false'));
-      panels.forEach(p => p.classList.remove('active'));
-      tab.setAttribute('aria-selected','true');
-      const panelId = tab.getAttribute('aria-controls');
-      document.getElementById(panelId)?.classList.add('active');
-      const file = tab.dataset.file;
-      if (file) loadTabContent(file, panelId);
-    });
-  });
-  const first = document.querySelector('.tablist [aria-selected="true"]');
-  if (first) {
-    const pid = first.getAttribute('aria-controls');
-    const file = first.dataset.file;
-    if (file) loadTabContent(file, pid);
-  }
-}
+    // Keep the selected tab visible in the horizontal scroller
+    btn.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+  };
 
-async function loadTabContent(file, panelId) {
-  try {
-    const r = await fetch(`content/${file}`);
-    const html = await r.text();
-    const panel = document.getElementById(panelId);
-    if (panel) panel.innerHTML = html;
-  } catch (e) {
-    // file:// fallback
-    const panel = document.getElementById(panelId);
-    if (panel) panel.innerHTML = "<p class='meta'>Content will load on GitHub Pages. Edit content/" + file + " to add your text.</p>";
-  }
-}
+  const loadFile = async (file) => {
+    if (cache.has(file)) return cache.get(file);
+    const url = `assets/docs/${file}`;
+    const res = await fetch(url, { cache: 'no-cache' });
+    const html = await res.text();
+    cache.set(file, html);
+    return html;
+  };
 
-async function refreshLedger(force) {
-  try {
-    const metrics = await fetchJson(CFG?.ledger_api?.metrics_url) || CFG?.fallback_ledger?.metrics || CFG?.fallback_burn || null;
-    if (metrics) {
-      if (metrics.start_supply && metrics.goal_supply && metrics.current_supply && metrics.total_burned == null) {
-        metrics.total_burned = Math.max(0, (metrics.start_supply || 0) - (metrics.current_supply || 0));
-        const totalTargetBurn = Math.max(1, (metrics.start_supply || 0) - (metrics.goal_supply || 1));
-        metrics.pct_to_goal = Math.max(0, Math.min(100, (metrics.total_burned / totalTargetBurn) * 100));
-      }
-      renderMetrics(metrics);
+  const handleClick = async (btn) => {
+    const file = btn.getAttribute('data-file');
+    const panelId = btn.getAttribute('aria-controls');
+    const panel = $('#' + panelId);
+
+    setActive(btn);
+    if (!panel) return;
+
+    panel.innerHTML = '<p class="meta">Loading…</p>';
+    try {
+      const html = await loadFile(file);
+      panel.innerHTML = html;
+    } catch (e) {
+      panel.innerHTML = '<p class="meta">Could not load this section right now.</p>';
+      console.error('Tab load error:', e);
     }
+  };
 
-    if (force) burnsCursor = null;
-    const burnsResp = await fetchJson(appendCursor(CFG?.ledger_api?.burns_url, burnsCursor)) || { items: CFG?.fallback_ledger?.burns || [], next_cursor: null };
-    renderBurns(burnsResp.items || [], burnsResp.next_cursor || null);
-
-    const milestones = await fetchJson(CFG?.ledger_api?.milestones_url) || { milestones: CFG?.fallback_ledger?.milestones || [] };
-    renderMilestones(milestones.milestones || []);
-  } catch (e) {
-    console.warn('Ledger load failed, using fallbacks', e);
-    renderMetrics({ start_supply: 1000000000, goal_supply: 23000000, current_supply: 1000000000, total_burned: 0, pct_to_goal: 0 });
-    renderBurns([], null);
-    renderMilestones([]);
-  }
-}
-
-function appendCursor(url, cursor) {
-  if (!url) return null;
-  if (!cursor) return url;
-  const sep = url.includes('?') ? '&' : '?';
-  return `${url}${sep}cursor=${encodeURIComponent(cursor)}`;
-}
-
-async function loadMoreBurns() {
-  if (!burnsCursor) return;
-  const next = await fetchJson(appendCursor(CFG?.ledger_api?.burns_url, burnsCursor));
-  const items = next?.items || [];
-  if (items.length) appendBurnRows(items);
-  burnsCursor = next?.next_cursor || null;
-  const btn = document.getElementById('loadMoreBurns');
-  if (btn) btn.hidden = !burnsCursor;
-}
-
-async function fetchJson(url) {
-  if (!url) return null;
-  const r = await fetch(url, { cache: 'no-store' });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return await r.json();
-}
-
-function renderMetrics(m) {
-  const start = m.start_supply ?? 1000000000;
-  const goal = m.goal_supply ?? 23000000;
-  const current = m.current_supply ?? start;
-  const totalBurned = m.total_burned ?? Math.max(0, start - current);
-  const pct = m.pct_to_goal ?? Math.max(0, Math.min(100, (totalBurned / Math.max(1, start - goal)) * 100));
-  const lastAgo = m.last_burn_ts ? timeAgo(m.last_burn_ts) : '—';
-
-  const cs = document.getElementById('currentSupply'); if (cs) cs.textContent = number(current) + ' tokens';
-  const ks = document.getElementById('kpiStart'); if (ks) ks.textContent = number(start) + ' tokens';
-  const kg = document.getElementById('kpiGoal'); if (kg) kg.textContent = number(goal) + ' tokens';
-
-  setText('kpiTotalBurned', number(totalBurned));
-  setText('kpiCurrentSupply', number(current));
-  setText('kpiPctGoal', pct.toFixed(2) + '%');
-  setText('kpiLastBurn', lastAgo);
-}
-
-function renderBurns(items, nextCursor) {
-  const body = document.getElementById('burnsBody');
-  const empty = document.getElementById('burnsEmpty');
-  const loadMore = document.getElementById('loadMoreBurns');
-  if (!body) return;
-
-  body.innerHTML = '';
-  if (!items || items.length === 0) {
-    if (empty) empty.hidden = false;
-  } else {
-    if (empty) empty.hidden = true;
-    appendBurnRows(items);
-  }
-
-  burnsCursor = nextCursor;
-  if (loadMore) loadMore.hidden = !nextCursor;
-}
-
-function appendBurnRows(items) {
-  const body = document.getElementById('burnsBody');
-  items.forEach(it => {
-    const tr = document.createElement('tr');
-
-    const tdTime = document.createElement('td');
-    tdTime.textContent = shortTime(it.timestamp);
-    tr.appendChild(tdTime);
-
-    const tdAmt = document.createElement('td');
-    tdAmt.className = 'right amount';
-    tdAmt.innerHTML = `${number(it.amount)} <span class="unit">$BURN-E</span>`;
-    tr.appendChild(tdAmt);
-
-    const tdType = document.createElement('td');
-    const span = document.createElement('span');
-    span.className = 'badge-pill';
-    const kind = (it.type || 'burn').replace('_', ' ');
-    span.textContent = titleCase(kind);
-    tdType.appendChild(span);
-    tr.appendChild(tdType);
-
-    const tdTx = document.createElement('td');
-    const a = document.createElement('a');
-    a.className = 'txhash';
-    a.href = it.explorer_url || '#';
-    a.target = '_blank'; a.rel = 'noopener';
-    a.textContent = shortHash(it.tx_hash || '');
-    tdTx.appendChild(a);
-    tr.appendChild(tdTx);
-
-    body.appendChild(tr);
-  });
-}
-
-function renderMilestones(milestones) {
-  const wrap = document.getElementById('milestoneChips');
-  if (!wrap) return;
-  wrap.innerHTML = '';
-  const list = milestones && milestones.length ? milestones : [
-    { label: '900M', supply: 900000000, reached: false },
-    { label: '500M', supply: 500000000, reached: false },
-    { label: '100M', supply: 100000000, reached: false },
-    { label: '23M (Goal)', supply: 23000000, reached: false }
-  ];
-  list.forEach(m => {
-    const chip = document.createElement('span');
-    chip.className = 'milestone-chip' + (m.reached ? ' reached' : '');
-    chip.textContent = m.label;
-    wrap.appendChild(chip);
-  });
-}
-
-function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
-function number(n) { try { return Number(n).toLocaleString(); } catch { return n; } }
-function shortHash(h) { if (!h) return '—'; return h.slice(0,4) + '…' + h.slice(-4); }
-function shortTime(ts) { if (!ts) return '—'; const d = new Date(ts); return d.toLocaleString(); }
-function titleCase(s){ return (s||'').replace(/\\b\\w/g, c => c.toUpperCase()); }
-function timeAgo(iso) {
-  const now = Date.now();
-  const t = new Date(iso).getTime();
-  const diff = Math.max(0, Math.floor((now - t) / 1000));
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
-  return `${Math.floor(diff/86400)}d ago`;
-}
-
-// --- Stepper <-> Tabs sync ---
-function setupStepper(){
-  const steps = Array.from(document.querySelectorAll('.chapter-stepper .step'));
-  const tabs = Array.from(document.querySelectorAll('#docs [role="tab"]'));
-  const byId = id => document.getElementById(id);
-
-  function activateTab(tabEl){
-    if (!tabEl) return;
-    tabs.forEach(t => t.setAttribute('aria-selected','false'));
-    document.querySelectorAll('#docs .tabpanel').forEach(p => p.classList.remove('active'));
-    tabEl.setAttribute('aria-selected','true');
-    const pid = tabEl.getAttribute('aria-controls');
-    document.getElementById(pid)?.classList.add('active');
-    const file = tabEl.dataset.file;
-    if (file) loadTabContent(file, pid);
-    steps.forEach(s => s.classList.toggle('active', s.dataset.target === tabEl.id));
-  }
-
-  steps.forEach(step => {
-    step.addEventListener('click', () => {
-      const target = byId(step.dataset.target);
-      activateTab(target);
-      document.getElementById('docs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  // Wire clicks
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => handleClick(btn));
   });
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      steps.forEach(s => s.classList.toggle('active', s.dataset.target === tab.id));
-    });
-  });
-}
+  // Load default active (Chapter 1)
+  const defaultBtn = $('#tab-about') || buttons[0];
+  if (defaultBtn) handleClick(defaultBtn);
+})();
 
-// --- Floating helpers ---
-function setupFab(){
-  const fabTop = document.getElementById('fabTop');
-  const fabLaunch = document.getElementById('fabLaunch');
-  if (fabTop){ fabTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' })); }
-  if (fabLaunch && CFG?.launch_url){ fabLaunch.href = CFG.launch_url; }
-}
+/* ================================
+   BURN LEDGER: LIGHT STUB
+   (Replace with real on-chain pulls)
+================================ */
+(() => {
+  const START = 1_000_000_000; // 1B
+  const GOAL  = 23_000_000;    // 23M
 
-/* ============================================
-   Email Subscribe Modal (Burn-E behavior)
-   First show: 30s   |   Re-show: 5m after close
-   Max total shows per visitor: 2
-   ============================================ */
-const MODAL_KEY = 'subscribe_shown_count';
-const SHOW_LIMIT = 2;
-const FIRST_DELAY_MS = 30000;    // 30 seconds
-const RESHOW_DELAY_MS = 300000;  // 5 minutes
+  const $kpiStart         = $('#kpiStart');
+  const $kpiGoal          = $('#kpiGoal');
+  const $kpiCurrentSupply = $('#kpiCurrentSupply');
+  const $kpiTotalBurned   = $('#kpiTotalBurned');
+  const $kpiPctGoal       = $('#kpiPctGoal');
+  const $kpiLastBurn      = $('#kpiLastBurn');
+  const $burnsEmpty       = $('#burnsEmpty');
+  const $burnsBody        = $('#burnsBody');
 
-function getModalCount() {
-  return parseInt(localStorage.getItem(MODAL_KEY) || '0', 10);
-}
-function canShowModal() { return getModalCount() < SHOW_LIMIT; }
-function markModalShown() {
-  localStorage.setItem(MODAL_KEY, String(getModalCount() + 1));
-}
+  const fmt = (n) => n.toLocaleString();
 
-function showSubscribeModal() {
-  const backdrop = document.getElementById('subscribeBackdrop');
-  const modal = backdrop?.querySelector('.modal');
-  if (!backdrop || !modal || !canShowModal()) return;
-  backdrop.style.display = 'flex';
-  backdrop.setAttribute('aria-hidden', 'false');
-  modal.classList.add('show');
-  markModalShown();
-}
+  // Demo (keep UI alive)
+  const current = START; // replace with real
+  const burned  = START - current;
+  const pct     = ((START - current) / (START - GOAL)) * 100;
 
-function hideSubscribeModal() {
-  const backdrop = document.getElementById('subscribeBackdrop');
-  const modal = backdrop?.querySelector('.modal');
-  if (!backdrop || !modal) return;
-  modal.classList.remove('show');
-  setTimeout(() => {
-    backdrop.style.display = 'none';
-    backdrop.setAttribute('aria-hidden', 'true');
-  }, 400);
-}
+  if ($kpiStart)         $kpiStart.textContent = fmt(START);
+  if ($kpiGoal)          $kpiGoal.textContent = fmt(GOAL);
+  if ($kpiCurrentSupply) $kpiCurrentSupply.textContent = fmt(current);
+  if ($kpiTotalBurned)   $kpiTotalBurned.textContent = fmt(burned);
+  if ($kpiPctGoal)       $kpiPctGoal.textContent = isFinite(pct) ? `${pct.toFixed(2)}%` : '0.00%';
+  if ($kpiLastBurn)      $kpiLastBurn.textContent = '—';
 
-function scheduleSubscribeModal(delayMs) {
-  if (canShowModal()) setTimeout(showSubscribeModal, delayMs);
-}
+  if ($burnsEmpty) $burnsEmpty.hidden = false;
+  if ($burnsBody)  $burnsBody.innerHTML = '';
+})();
 
-function setupModal() {
-  const btnClose = document.getElementById('subscribeClose');
-  const form = document.getElementById('subscribeForm');
-  const dont = document.getElementById('dontShowLink');
+/* ================================
+   SUBSCRIBE POPUP (subscribe* IDs)
+   - Shows once after 30s
+   - If dismissed (not “Don’t show again”), shows once more after 5m
+================================ */
+(() => {
+  const FIRST_DELAY_MS = 30_000;
+  const SECOND_DELAY_MS = 5 * 60_000;
+  const STORAGE_KEY = 'burne_subscribe_state_v1';
 
-  // First popup after 30 seconds
-  scheduleSubscribeModal(FIRST_DELAY_MS);
+  const $backdrop = $('#subscribeBackdrop');
+  const $modal    = $('.modal.burne', $backdrop || document);
+  const $email    = $('#subscribeEmail');
+  const $form     = $('#subscribeForm');
+  const $close    = $('#subscribeClose');
+  const $dontShow = $('#dontShowLink');
+  const $submit   = $('#subscribeSubmit');
 
-  // On close: re-show once after 5 minutes
-  btnClose?.addEventListener('click', () => {
-    hideSubscribeModal();
-    scheduleSubscribeModal(RESHOW_DELAY_MS);
-  });
+  if (!$backdrop || !$modal) return;
 
-  // On "Don't show again": stop future popups
-  dont?.addEventListener('click', (e) => {
+  let firstTimer = null;
+  let secondTimer = null;
+
+  const readState = () => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  };
+  const writeState = (next) => localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+
+  const showModal = () => {
+    if ($backdrop.classList.contains('show')) return;
+    $backdrop.setAttribute('aria-hidden', 'false');
+    $backdrop.classList.add('show');
+    $modal.classList.add('show');
+    setTimeout(() => $email?.focus(), 50);
+
+    const st = readState();
+    if (!st.firstShownAt) {
+      st.firstShownAt = Date.now();
+      writeState(st);
+    }
+  };
+
+  const hideModal = () => {
+    $modal.classList.remove('show');
+    $backdrop.classList.remove('show');
+    $backdrop.setAttribute('aria-hidden', 'true');
+  };
+
+  const scheduleSecond = () => {
+    clearTimeout(secondTimer);
+    secondTimer = setTimeout(() => {
+      const st = readState();
+      if (st.dismissedOnce && !st.secondShownAt && !st.subscribedAt && !st.dontShowAgain) {
+        st.secondShownAt = Date.now();
+        writeState(st);
+        showModal();
+      }
+    }, SECOND_DELAY_MS);
+  };
+
+  // Show once at 30s if never shown and user not subscribed
+  (() => {
+    const st = readState();
+    if (!st.firstShownAt && !st.subscribedAt && !st.dontShowAgain) {
+      clearTimeout(firstTimer);
+      firstTimer = setTimeout(showModal, FIRST_DELAY_MS);
+    }
+  })();
+
+  // Submit (replace with real endpoint)
+  $form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    localStorage.setItem(MODAL_KEY, String(SHOW_LIMIT));
-    hideSubscribeModal();
+    const email = $email?.value?.trim();
+    if (!email) return;
+    $submit.disabled = true;
+    $submit.textContent = 'Thanks! 🔥';
+
+    // Simulate success
+    setTimeout(() => {
+      hideModal();
+      const st = readState();
+      writeState({ ...st, subscribedAt: Date.now(), dismissedOnce: true });
+    }, 600);
   });
 
-  // On submit: lock out future popups
-  form?.addEventListener('submit', () => {
-    localStorage.setItem(MODAL_KEY, String(SHOW_LIMIT));
-    hideSubscribeModal();
-  });
-}
+  const dismiss = (dontShowAgain = false) => {
+    hideModal();
+    const st = readState();
+    writeState({ ...st, dismissedOnce: true, dontShowAgain });
+    if (!dontShowAgain && !st.subscribedAt) scheduleSecond();
+  };
 
-/* IMPORTANT: Ensure setupModal() is called on DOM ready
-   If you already have a DOMContentLoaded handler, just call setupModal() inside it. */
-document.addEventListener('DOMContentLoaded', () => {
-  try { setupModal(); } catch (e) { console.error(e); }
-});
+  $close?.addEventListener('click', () => dismiss(false));
+  $dontShow?.addEventListener('click', (e) => { e.preventDefault(); dismiss(true); });
+
+  // Click outside to close
+  $backdrop.addEventListener('click', (e) => { if (e.target === $backdrop) dismiss(false); });
+
+  // Esc to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $backdrop.classList.contains('show')) dismiss(false);
+  });
+})();
+
+/* ================================
+   EMBER SPARKS CANVAS (visual)
+================================ */
+(() => {
+  const canvas = $('#sparks');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let sparks = [];
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  const makeSpark = () => {
+    const x = Math.random() * canvas.width;
+    const y = canvas.height + 10;
+    const speed = Math.random() * 1 + 0.5;
+    const size = Math.random() * 2 + 1;
+    const life = Math.random() * 120 + 60;
+    sparks.push({ x, y, speed, size, life });
+  };
+
+  const draw = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.y -= s.speed;
+      s.life--;
+
+      const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
+      g.addColorStop(0, 'rgba(255,180,80,1)');
+      g.addColorStop(1, 'rgba(255,122,26,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (s.life <= 0) sparks.splice(i, 1);
+    }
+    if (Math.random() < 0.3) makeSpark();
+    requestAnimationFrame(draw);
+  };
+  draw();
+
+  // Keep behind content
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    left: 0, top: 0,
+    pointerEvents: 'none',
+    zIndex: 0,
+    width: '100%',
+    height: '100%'
+  });
+})();
