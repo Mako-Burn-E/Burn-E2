@@ -10,8 +10,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Site CSS + JS -->
+  <!-- Critical fallback: prevent white flash if external CSS fails -->
+  <style>
+    html, body { margin:0; padding:0; background:#1E1A1F; color:#fff; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .robot { max-width:100%; height:auto; }
+  </style>
+
+  <!-- Main stylesheet (project-relative path; case-sensitive on GitHub Pages) -->
   <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Optional: console check to verify CSS actually loaded -->
+  <script>
+    window.addEventListener('load', function () {
+      const cs = getComputedStyle(document.documentElement);
+      const flame = cs.getPropertyValue('--flame-yellow').trim();
+      if (!flame) {
+        console.warn('[BURN-E] styles.css may not be loading. Check path/case: assets/css/styles.css');
+      } else {
+        console.log('[BURN-E] CSS OK. --flame-yellow =', flame);
+      }
+    });
+  </script>
+
+  <!-- Main JS -->
   <script defer src="assets/js/main.js"></script>
 </head>
 <body>
@@ -27,7 +49,6 @@
     </div>
   </nav>
 
-  <!-- Page Wrap -->
   <div class="wrap">
     <!-- Hero -->
     <header class="hero" id="top">
@@ -39,7 +60,6 @@
             <a class="btn-primary" id="launchBtn" href="#" target="_blank" rel="noopener">Launch dApp</a>
             <a class="btn-secondary" id="buyBtn" href="#" target="_blank" rel="noopener">Grab $BURN-E</a>
           </div>
-
           <div class="panels">
             <div class="panel">
               <h3>Supply Start</h3>
@@ -54,33 +74,30 @@
               <div class="meta" id="currentSupply">—</div>
             </div>
           </div>
-
           <div class="path" aria-hidden="true"></div>
         </div>
-
         <div>
-          <img class="robot" alt="$BURN-E robot" src="assets/img/robot-hero.png">
+          <img class="robot" alt="$BURN-E robot" src="assets/img/robot-hero.png" />
         </div>
       </div>
     </header>
 
-    <!-- Playbook (Chapters) -->
+    <!-- Docs / Playbook -->
     <section id="docs">
       <h2 class="section-title">$BURN-E’s Playbook</h2>
       <p class="section-subtitle">Learn the system: what $BURN-E is, how burns work with PlayDeFi, and how Burner NFTs unlock&nbsp;access.</p>
 
       <div class="tabs card">
         <div class="tablist" role="tablist" aria-label="Playbook sections">
-          <button role="tab" data-file="about.html"       id="tab-about"       aria-controls="panel-about"       aria-selected="true">Chapter 1: About $BURN-E</button>
+          <button role="tab" data-file="about.html" id="tab-about" aria-controls="panel-about" aria-selected="true">Chapter 1: About $BURN-E</button>
           <button role="tab" data-file="integration.html" id="tab-integration" aria-controls="panel-integration" aria-selected="false">Chapter 2: PlayDeFi Integration</button>
-          <button role="tab" data-file="burner.html"      id="tab-burner"      aria-controls="panel-burner"      aria-selected="false">Chapter 3: $BURN-E Burner NFT</button>
-          <button role="tab" data-file="faq.html"         id="tab-faq"         aria-controls="panel-faq"         aria-selected="false">Chapter 4: FAQ</button>
+          <button role="tab" data-file="burner.html" id="tab-burner" aria-controls="panel-burner" aria-selected="false">Chapter 3: $BURN-E Burner NFT</button>
+          <button role="tab" data-file="faq.html" id="tab-faq" aria-controls="panel-faq" aria-selected="false">Chapter 4: FAQ</button>
         </div>
-
-        <div id="panel-about"       class="tabpanel active prose" role="tabpanel" aria-labelledby="tab-about"       tabindex="0"></div>
-        <div id="panel-integration" class="tabpanel prose"        role="tabpanel" aria-labelledby="tab-integration" tabindex="0"></div>
-        <div id="panel-burner"      class="tabpanel prose"        role="tabpanel" aria-labelledby="tab-burner"      tabindex="0"></div>
-        <div id="panel-faq"         class="tabpanel prose"        role="tabpanel" aria-labelledby="tab-faq"         tabindex="0"></div>
+        <div id="panel-about" class="tabpanel active prose" role="tabpanel" aria-labelledby="tab-about" tabindex="0"></div>
+        <div id="panel-integration" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-integration" tabindex="0"></div>
+        <div id="panel-burner" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-burner" tabindex="0"></div>
+        <div id="panel-faq" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-faq" tabindex="0"></div>
       </div>
     </section>
 
@@ -104,19 +121,14 @@
             <h3>Recent Burns</h3>
             <button class="tiny" id="refreshBurns" type="button">Refresh</button>
           </div>
-
           <div id="burnsEmpty" class="empty" hidden>No burns yet — be the spark 🔥</div>
-
           <table class="ledger" id="burnsTable" aria-label="Recent burn transactions">
             <thead>
               <tr><th>Time</th><th class="right">Amount</th><th>Type</th><th>Tx</th></tr>
             </thead>
             <tbody id="burnsBody"></tbody>
           </table>
-
-          <div class="row-end">
-            <button class="ghost tiny" id="loadMoreBurns" type="button" hidden>Load more</button>
-          </div>
+          <div class="row-end"><button class="ghost tiny" id="loadMoreBurns" type="button" hidden>Load more</button></div>
         </div>
 
         <div class="side-stack">
@@ -131,7 +143,6 @@
     <!-- Launch -->
     <section id="launch">
       <div class="card launch-grid">
-        <!-- LEFT: content -->
         <div class="launch-inner">
           <h2 class="section-title">Ready to Join the Burn?</h2>
           <p class="meta">
@@ -139,13 +150,11 @@
           </p>
           <div class="cta-row">
             <a class="btn-primary" id="launchBtn2" href="#" target="_blank" rel="noopener">Join the Burn</a>
-            <a class="btn-secondary" id="fuelBtn"    href="#" target="_blank" rel="noopener">Fuel the Burn</a>
+            <a class="btn-secondary" id="fuelBtn" href="#" target="_blank" rel="noopener">Fuel the Burn</a>
           </div>
         </div>
-
-        <!-- RIGHT: art -->
         <div>
-          <img class="robot" alt="$BURN-E alt art" src="assets/img/robot-launch.png">
+          <img class="robot" alt="$BURN-E alt art" src="assets/img/robot-launch.png" />
         </div>
       </div>
     </section>
@@ -154,7 +163,7 @@
     <footer>
       <div class="small">© 2025 $BURN-E. All rights reserved.</div>
     </footer>
-  </div><!-- /.wrap -->
+  </div>
 
   <!-- Floating helpers -->
   <div class="fab-wrap" aria-live="polite">
@@ -162,13 +171,11 @@
     <button id="fabTop" class="fab ghost" title="Back to top">Top</button>
   </div>
 
-  <!-- =========================
-       Email Signup Popup (Burn-E)
-       ========================= -->
+  <!-- Email Signup Popup (Burn-E) -->
   <div class="modal-backdrop" id="signupBackdrop" hidden>
     <div class="modal burne" role="dialog" aria-modal="true" aria-labelledby="signupTitle">
       <button class="modal-close" id="signupClose" aria-label="Close">×</button>
-      <div class="modal-aura" aria-hidden="true"></div>
+      <div class="modal-aura"></div>
 
       <header class="modal-head">
         <div class="flame">🔥</div>
@@ -193,66 +200,68 @@
   <!-- Ember Sparks Background -->
   <canvas id="sparks"></canvas>
 
-  <!-- Inline effects kept minimal: Scroll Reveal + Sparks -->
+  <!-- Scroll Reveal & Sparks Scripts -->
   <script>
-    // Simple Scroll Reveal
-    document.addEventListener('scroll', () => {
-      document.querySelectorAll('.reveal').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const visible = rect.top < window.innerHeight * 0.85;
-        el.classList.toggle('visible', visible);
-      });
+  /* --- Simple Scroll Reveal --- */
+  document.addEventListener('scroll', () => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const visible = rect.top < window.innerHeight * 0.85;
+      el.classList.toggle('visible', visible);
     });
+  });
 
-    // Ember Sparks
-    const canvas = document.getElementById('sparks');
-    const ctx = canvas.getContext('2d');
-    let sparks = [];
+  /* --- Ember Sparks --- */
+  const canvas = document.getElementById('sparks');
+  const ctx = canvas.getContext('2d');
+  let sparks = [];
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function makeSpark() {
+    const x = Math.random() * canvas.width;
+    const y = canvas.height + 10;
+    const speed = Math.random() * 1 + 0.5;
+    const size = Math.random() * 2 + 1;
+    const life = Math.random() * 120 + 60;
+    sparks.push({x, y, speed, size, life});
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.y -= s.speed;
+      s.life--;
+      const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
+      grad.addColorStop(0, 'rgba(255,180,80,1)');
+      grad.addColorStop(1, 'rgba(255,122,26,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+      if (s.life <= 0) sparks.splice(i, 1);
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    if (Math.random() < 0.3) makeSpark();
+    requestAnimationFrame(animate);
+  }
+  animate();
 
-    function makeSpark() {
-      const x = Math.random() * canvas.width;
-      const y = canvas.height + 10;
-      const speed = Math.random() * 1 + 0.5;
-      const size = Math.random() * 2 + 1;
-      const life = Math.random() * 120 + 60;
-      sparks.push({ x, y, speed, size, life });
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        s.y -= s.speed;
-        s.life--;
-        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
-        grad.addColorStop(0, 'rgba(255,180,80,1)');
-        grad.addColorStop(1, 'rgba(255,122,26,0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        ctx.fill();
-        if (s.life <= 0) sparks.splice(i, 1);
-      }
-      if (Math.random() < 0.3) makeSpark();
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // Keep canvas fixed behind content
-    canvas.style.position = 'fixed';
-    canvas.style.left = 0;
-    canvas.style.top = 0;
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = 0;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
+  // Keep canvas fixed behind content
+  Object.assign(canvas.style, {
+    position: 'fixed',
+    left: 0,
+    top: 0,
+    pointerEvents: 'none',
+    zIndex: 0,
+    width: '100%',
+    height: '100%'
+  });
   </script>
 </body>
 </html>
