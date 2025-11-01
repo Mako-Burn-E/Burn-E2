@@ -9,38 +9,6 @@
   --ember-glow: rgba(255,122,26,0.3);
   --path-flame: rgba(224,59,0,0.45);
 }
-
-:root{
-  --page-max: 1200px;    /* desktop container width */
-  --page-pad: 24px;      /* desktop side padding  */
-  --page-pad-sm: 4vw;    /* mobile side padding   */
-}
-
-/* === GLOBAL WIDTH ALIGNMENT (match Launch section) === */
-.wrap,
-.hero,
-.tabs,
-section,
-footer {
-  width: 100%;
-  max-width: var(--page-max);
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
-  box-sizing: border-box;
-}
-
-@media (max-width: 960px){
-  .wrap,
-  .hero,
-  .tabs,
-  section,
-  footer {
-    max-width: 92vw;
-    padding: 0 var(--page-pad-sm);
-  }
-}
-
-
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--charcoal-black); color: #FFF; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
 .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
@@ -162,45 +130,140 @@ footer { margin: 50px 0 20px; color: var(--ash-gray); text-align: center; }
   .launch-grid { grid-template-columns: 1fr; }
 }
 
-/* === CLEAN LAUNCH LAYOUT (no page-width control) === */
-#launch .launch-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr; /* content + art */
-  align-items: center;
-  gap: 24px;
-}
 
-#launch .launch-inner { max-width: 720px; }
-#launch .cta-row {
+/* ===============================
+   BURN‑E PLAYBOOK: Chapters 1–4
+   Readability + Theming Restore
+   =============================== */
+
+/* Tab row: centered, breathable, ember hover */
+.tabs { margin-top: 16px; }
+.tabs .tablist {
   display: flex;
-  gap: 12px;
+  justify-content: center;
   flex-wrap: wrap;
-  align-items: center;
-  margin-top: 14px;
+  gap: 10px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
 }
-#launch .btn-primary,
-#launch .btn-secondary { width: auto; max-width: none; }
+.tabs .tablist button {
+  background: rgba(255,212,78,0.06);
+  border: 1px solid var(--card-border);
+  color: var(--flame-yellow);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+.tabs .tablist button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 16px var(--ember-glow);
+  background: rgba(255,212,78,0.1);
+}
+.tabs .tablist button[aria-selected='true'] {
+  background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow));
+  color: #1E1A1F;
+  border-color: transparent;
+  text-shadow: none;
+}
 
-@media (max-width: 960px){
-  #launch .launch-grid { 
-    grid-template-columns: 1fr; 
-    justify-items: center; 
-    gap: 16px;
-  }
-  #launch .launch-inner {
-    max-width: 100%;
-    text-align: center;
-  }
-  #launch .btn-primary,
-  #launch .btn-secondary {
-    width: 92vw; 
-    max-width: 420px;
-    box-sizing: border-box;
-  }
-  #launch .robot {
-    width: 100%;
-    max-width: 360px;
-    margin: 10px auto 0;
-    display: block;
-  }
+/* Panel container with obsidian card + soft ember edge */
+.tabpanel {
+  display: none;
+  padding: 18px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background:
+    radial-gradient(800px 240px at 20% 0%, rgba(255,122,26,0.06), transparent 60%),
+    var(--obsidian-brown);
+}
+.tabpanel.active { display: block; }
+
+/* Prose readability — the "Burn‑E readability mode" */
+.tabpanel.prose {
+  line-height: 1.7;
+  font-size: 15.5px;
+  color: var(--ash-gray);
+  text-align: left;
+  padding: 18px 22px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.tabpanel.prose h3,
+.tabpanel.prose h4 {
+  color: var(--flame-yellow);
+  font-weight: 800;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.tabpanel.prose p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+.tabpanel.prose ul,
+.tabpanel.prose ol {
+  margin: 0 0 14px 24px;
+  line-height: 1.6;
+}
+.tabpanel.prose strong { color: var(--flame-yellow); }
+.tabpanel.prose em { color: var(--ember-orange); }
+
+/* Ember divider under h3s */
+.tabpanel.prose h3::after {
+  content: "";
+  display: block;
+  margin-top: 8px;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ember-orange), transparent);
+  border-radius: 999px;
+  opacity: 0.6;
+}
+
+/* Glow word highlights for inline emphasis */
+.glow-yellow {
+  color: var(--flame-yellow);
+  text-shadow: 0 0 8px rgba(255,212,78,0.6);
+  font-weight: 700;
+}
+.glow-orange {
+  color: var(--ember-orange);
+  text-shadow: 0 0 10px rgba(255,122,26,0.5);
+  font-weight: 700;
+}
+.glow-red {
+  color: var(--burn-red);
+  text-shadow: 0 0 10px rgba(224,59,0,0.6);
+  font-weight: 700;
+}
+
+/* FAQ readability (questions pop, answers breathe) */
+.faq-section h4 {
+  color: var(--flame-yellow);
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 24px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 10px rgba(255,212,78,0.5);
+  letter-spacing: 0.5px;
+}
+.faq-section p {
+  color: var(--ash-gray);
+  line-height: 1.7;
+  font-size: 15.5px;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(255,122,26,0.4);
+  font-style: italic;
+}
+
+/* Mobile niceties */
+@media (max-width: 960px) {
+  .tabs .tablist { gap: 8px; }
+  .tabs .tablist button { min-width: 140px; padding: 10px 12px; }
+  .tabpanel { padding: 14px; }
+  .tabpanel.prose { padding: 16px 18px; }
 }
