@@ -62,7 +62,19 @@ section { margin: 56px 0; }
 
 /* --- Tabs / Panels --- */
 .tabs { margin-top: 8px; }
-.tablist { display: flex; gap: 8px; border-bottom: 1px solid var(--card-border); overflow-x: auto; }
+.tablist {
+  display: flex;
+  flex-wrap: nowrap;          /* keeps all tabs in one line */
+  gap: 8px;
+  border-bottom: 1px solid var(--card-border);
+  overflow-x: auto;           /* allows side-scrolling on smaller screens */
+  -webkit-overflow-scrolling: touch; /* smooth scroll for mobile */
+}
+
+.tablist button {
+  flex: 0 0 auto;             /* prevents buttons from shrinking */
+}
+
 .tablist button { background: transparent; border: 1px solid var(--card-border); color: var(--flame-yellow); padding: 10px 14px; border-radius: 12px 12px 0 0; font-weight: 700; cursor: pointer; }
 .tablist button[aria-selected='true'] { background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow)); color: #1E1A1F; border-color: transparent; }
 .tabpanel { display: none; padding: 16px; border: 1px solid var(--card-border); border-top: 0; border-radius: 0 12px 12px 12px; background: var(--obsidian-brown); }
