@@ -10,34 +10,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@700;800;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Critical fallback: prevent white flash if external CSS fails -->
+  <!-- 🔧 IMPORTANT: point to the actual CSS file in your repo -->
+  <link rel="stylesheet" href="./assets/css/styles_burne_final.css?v=1">
+
+  <!-- Minimal safety fallback so background never goes white even if CSS 404s -->
   <style>
     html, body { margin:0; padding:0; background:#1E1A1F; color:#fff; }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    .robot { max-width:100%; height:auto; }
+    /* Ensure hero image doesn’t collapse if CSS fails */
+    img.robot { display:block; max-width:100%; height:auto; }
   </style>
 
-  <!-- Main stylesheet (project-relative path; case-sensitive on GitHub Pages) -->
-  <link rel="stylesheet" href="assets/css/styles.css">
-
-  <!-- Optional: console check to verify CSS actually loaded -->
-  <script>
-    window.addEventListener('load', function () {
-      const cs = getComputedStyle(document.documentElement);
-      const flame = cs.getPropertyValue('--flame-yellow').trim();
-      if (!flame) {
-        console.warn('[BURN-E] styles.css may not be loading. Check path/case: assets/css/styles.css');
-      } else {
-        console.log('[BURN-E] CSS OK. --flame-yellow =', flame);
-      }
-    });
-  </script>
-
-  <!-- Main JS -->
   <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-  <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner">
       <div class="nav-brand">$BURN&#8209;E</div>
@@ -50,7 +35,6 @@
   </nav>
 
   <div class="wrap">
-    <!-- Hero -->
     <header class="hero" id="top">
       <div class="hero-inner">
         <div>
@@ -82,7 +66,6 @@
       </div>
     </header>
 
-    <!-- Docs / Playbook -->
     <section id="docs">
       <h2 class="section-title">$BURN-E’s Playbook</h2>
       <p class="section-subtitle">Learn the system: what $BURN-E is, how burns work with PlayDeFi, and how Burner NFTs unlock&nbsp;access.</p>
@@ -101,7 +84,6 @@
       </div>
     </section>
 
-    <!-- Burn Ledger -->
     <section id="live">
       <h2 class="section-title">
         Burn Ledger
@@ -140,7 +122,6 @@
       </div>
     </section>
 
-    <!-- Launch -->
     <section id="launch">
       <div class="card launch-grid">
         <div class="launch-inner">
@@ -149,8 +130,12 @@
             This button opens the official launch flow. Always verify the contract address from our official channels.
           </p>
           <div class="cta-row">
-            <a class="btn-primary" id="launchBtn2" href="#" target="_blank" rel="noopener">Join the Burn</a>
-            <a class="btn-secondary" id="fuelBtn" href="#" target="_blank" rel="noopener">Fuel the Burn</a>
+            <a class="btn-primary" id="launchBtn2" href="#" target="_blank" rel="noopener">
+              Join the Burn
+            </a>
+            <a class="btn-secondary" id="fuelBtn" href="#" target="_blank" rel="noopener">
+              Fuel the Burn
+            </a>
           </div>
         </div>
         <div>
@@ -159,7 +144,6 @@
       </div>
     </section>
 
-    <!-- Footer -->
     <footer>
       <div class="small">© 2025 $BURN-E. All rights reserved.</div>
     </footer>
@@ -202,66 +186,49 @@
 
   <!-- Scroll Reveal & Sparks Scripts -->
   <script>
-  /* --- Simple Scroll Reveal --- */
-  document.addEventListener('scroll', () => {
-    document.querySelectorAll('.reveal').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const visible = rect.top < window.innerHeight * 0.85;
-      el.classList.toggle('visible', visible);
+    // Simple Scroll Reveal
+    document.addEventListener('scroll', () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const visible = rect.top < window.innerHeight * 0.85;
+        el.classList.toggle('visible', visible);
+      });
     });
-  });
 
-  /* --- Ember Sparks --- */
-  const canvas = document.getElementById('sparks');
-  const ctx = canvas.getContext('2d');
-  let sparks = [];
+    // Ember Sparks
+    const canvas = document.getElementById('sparks');
+    const ctx = canvas.getContext('2d');
+    let sparks = [];
+    function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+    addEventListener('resize', resizeCanvas); resizeCanvas();
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  function makeSpark() {
-    const x = Math.random() * canvas.width;
-    const y = canvas.height + 10;
-    const speed = Math.random() * 1 + 0.5;
-    const size = Math.random() * 2 + 1;
-    const life = Math.random() * 120 + 60;
-    sparks.push({x, y, speed, size, life});
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const s = sparks[i];
-      s.y -= s.speed;
-      s.life--;
-      const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
-      grad.addColorStop(0, 'rgba(255,180,80,1)');
-      grad.addColorStop(1, 'rgba(255,122,26,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-      ctx.fill();
-      if (s.life <= 0) sparks.splice(i, 1);
+    function makeSpark(){
+      const x = Math.random()*canvas.width;
+      const y = canvas.height + 10;
+      const speed = Math.random()*1 + 0.5;
+      const size = Math.random()*2 + 1;
+      const life = Math.random()*120 + 60;
+      sparks.push({x,y,speed,size,life});
     }
-    if (Math.random() < 0.3) makeSpark();
-    requestAnimationFrame(animate);
-  }
-  animate();
-
-  // Keep canvas fixed behind content
-  Object.assign(canvas.style, {
-    position: 'fixed',
-    left: 0,
-    top: 0,
-    pointerEvents: 'none',
-    zIndex: 0,
-    width: '100%',
-    height: '100%'
-  });
+    (function animate(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for (let i=sparks.length-1;i>=0;i--){
+        const s = sparks[i];
+        s.y -= s.speed; s.life--;
+        const g = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size);
+        g.addColorStop(0,'rgba(255,180,80,1)');
+        g.addColorStop(1,'rgba(255,122,26,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill();
+        if (s.life<=0) sparks.splice(i,1);
+      }
+      if (Math.random()<0.3) makeSpark();
+      requestAnimationFrame(animate);
+    })();
+    // Keep canvas fixed behind content
+    Object.assign(canvas.style,{
+      position:'fixed',left:0,top:0,pointerEvents:'none',zIndex:0,width:'100%',height:'100%'
+    });
   </script>
 </body>
 </html>
