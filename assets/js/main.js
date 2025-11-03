@@ -8,9 +8,14 @@ document.getElementById('fabTop')?.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// --- Tabs (no remote fetch; content is embedded)
+// --- Tabs (now support remote fetch via data-file)
 const tabButtons = Array.from(document.querySelectorAll('.tablist [role="tab"]'));
 const panels = Array.from(document.querySelectorAll('.tabpanel'));
+
+function getPanelForTab(tabEl) {
+  const pid = tabEl.getAttribute('aria-controls');
+  return pid ? document.getElementById(pid) : null;
+}
 
 function activateTab(id) {
   // set selected state on tabs
@@ -18,9 +23,11 @@ function activateTab(id) {
     const selected = btn.id === id;
     btn.setAttribute('aria-selected', selected ? 'true' : 'false');
   });
-  // show the associated panel
+
+  // show the associated panel (use hidden attribute to match HTML)
   panels.forEach(p => {
-    p.classList.toggle('active', p.getAttribute('aria-labelledby') === id);
+    const active = p.getAttribute('aria-labelledby') === id;
+    p.toggleAttribute('hidden', !active);
   });
 
   // If FAQ tab became active, ensure accordion is initialized
@@ -30,12 +37,53 @@ function activateTab(id) {
   }
 }
 
-// click -> activate
+async function loadInto(panel, url) {
+  if (!panel || !url) return;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+    const html = await res.text();
+    panel.innerHTML = html;
+    // Initialize FAQ accordion if this panel contains FAQ-style H4 blocks
+    initFaqAccordion(panel);
+    panel.dataset.loaded = '1';
+  } catch (err) {
+    console.error(err);
+    // leave fallback content in place
+  }
+}
+
+// click -> activate (+ lazy-load if needed)
 tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => activateTab(btn.id));
+  btn.addEventListener('click', async () => {
+    const panel = getPanelForTab(btn);
+    activateTab(btn.id);
+
+    const url = btn.dataset.file;
+    if (url && panel && panel.dataset.loaded !== '1') {
+      await loadInto(panel, url);
+    }
+  });
 });
 
-// --- FAQ Accordion (one open at a time)
+// If the initially selected tab has data-file, load it on ready
+document.addEventListener('DOMContentLoaded', async () => {
+  const activeTab = tabButtons.find(b => b.getAttribute('aria-selected') === 'true');
+  if (activeTab) {
+    const panel = getPanelForTab(activeTab);
+    const url = activeTab.dataset.file;
+    if (url && panel && panel.dataset.loaded !== '1') {
+      await loadInto(panel, url);
+    }
+    // If FAQ starts active
+    if (activeTab.id === 'tab-faq') {
+      const faqPanel = document.getElementById('panel-faq');
+      initFaqAccordion(faqPanel);
+    }
+  }
+});
+
+// --- FAQ Accordion (one open at a time) — unchanged API
 function initFaqAccordion(panel) {
   if (!panel || panel.dataset.accordionInit === '1') return;
 
@@ -132,24 +180,15 @@ function closeItem(item) {
   if (!btn || !a) return;
   btn.setAttribute('aria-expanded', 'false');
   a.style.maxHeight = '0px';
-  // After transition ends, if still closed, hide display for accessibility
-  const onEnd = (ev) => {
+  // After transition ends, if still closed, keep display block for height calc
+  const onEnd = () => {
     if (btn.getAttribute('aria-expanded') === 'false') {
-      a.style.display = 'block'; // keep block for height calc; we control visibility via max-height
+      a.style.display = 'block';
     }
     a.removeEventListener('transitionend', onEnd);
   };
   a.addEventListener('transitionend', onEnd);
 }
-
-// If FAQ panel starts active on load, initialize it
-document.addEventListener('DOMContentLoaded', () => {
-  const activeTab = tabButtons.find(b => b.getAttribute('aria-selected') === 'true');
-  if (activeTab?.id === 'tab-faq') {
-    const faqPanel = document.getElementById('panel-faq');
-    initFaqAccordion(faqPanel);
-  }
-});
 
 // --- Minimal sparks background (kept behind content)
 (function sparks() {
