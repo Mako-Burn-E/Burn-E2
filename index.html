@@ -71,7 +71,8 @@
         </div>
       </div>
 
-      <div class="path" aria-hidden="true"></div>
+      <!-- Ensure this decorative layer never blocks clicks -->
+      <div class="path" aria-hidden="true" style="pointer-events:none;"></div>
     </div>
   </div>
 </header>
@@ -87,29 +88,31 @@
 
       <div class="tabs card">
         <div class="tablist" role="tablist" aria-label="Playbook sections">
-          <button role="tab" id="tab-about" aria-controls="panel-about" aria-selected="true">Chapter 1: About $BURN-E</button>
-          <button role="tab" id="tab-integration" aria-controls="panel-integration" aria-selected="false">Chapter 2: PlayDeFi Integration</button>
-          <button role="tab" id="tab-burner" aria-controls="panel-burner" aria-selected="false">Chapter 3: $BURN-E Burner NFT</button>
-          <button role="tab" id="tab-faq" aria-controls="panel-faq" aria-selected="false">Chapter 4: FAQ</button>
+          <!-- ADDED data-file attributes so JS can fetch chapter content -->
+          <button role="tab" id="tab-about" data-file="content/about.html" aria-controls="panel-about" aria-selected="true">Chapter 1: About $BURN-E</button>
+          <button role="tab" id="tab-integration" data-file="content/integration.html" aria-controls="panel-integration" aria-selected="false">Chapter 2: PlayDeFi Integration</button>
+          <button role="tab" id="tab-burner" data-file="content/burner.html" aria-controls="panel-burner" aria-selected="false">Chapter 3: $BURN-E Burner NFT</button>
+          <button role="tab" id="tab-faq" data-file="content/faq.html" aria-controls="panel-faq" aria-selected="false">Chapter 4: FAQ</button>
         </div>
 
-        <!-- Panels (pre-filled content so nothing looks empty even if fetch fails) -->
+        <!-- Panels (prefilled fallback) -->
         <div id="panel-about" class="tabpanel active prose" role="tabpanel" aria-labelledby="tab-about" tabindex="0">
           <h3>What is $BURN-E?</h3>
           <p><strong class="glow-yellow">$BURN-E</strong> is a deflationary token—born at 1B supply, engineered to burn down toward <em class="glow-orange">23M</em>.</p>
         </div>
 
-        <div id="panel-integration" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-integration" tabindex="0">
+        <!-- Hide inactive panels; content will be injected when their tabs are clicked -->
+        <div id="panel-integration" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-integration" tabindex="0" hidden>
           <h3>PlayDeFi Integration</h3>
           <p>Events, entries, and on-chain receipts fuel automated burns and progress to goal.</p>
         </div>
 
-        <div id="panel-burner" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-burner" tabindex="0">
+        <div id="panel-burner" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-burner" tabindex="0" hidden>
           <h3>Burner NFT</h3>
           <p>One-time, non-transferable access pass to join events. <strong class="glow-yellow">Entries scale</strong> with # of Burners you hold.</p>
         </div>
 
-        <div id="panel-faq" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-faq" tabindex="0">
+        <div id="panel-faq" class="tabpanel prose" role="tabpanel" aria-labelledby="tab-faq" tabindex="0" hidden>
           <div class="faq-section">
             <h4>Is this live?</h4>
             <p>Pre-launch until announced. Watch the Burn Ledger for updates.</p>
@@ -214,10 +217,9 @@
   </div>
 
   <!-- Background canvas (kept behind content) -->
-  <canvas id="sparks" aria-hidden="true"></canvas>
+  <canvas id="sparks" aria-hidden="true" style="position:fixed;inset:0;z-index:-1;pointer-events:none;"></canvas>
 
   <!-- Main JS -->
   <script src="assets/js/main.js"></script>
 </body>
 </html>
-
