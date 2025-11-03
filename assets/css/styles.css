@@ -33,16 +33,14 @@ a{color:var(--flame-yellow);text-decoration:none}
 .nav-cta{background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));color:#1E1A1F;padding:10px 14px;border-radius:10px;font-weight:800}
 
 /* Hero */
-.hero p.tag {
-  white-space: nowrap;
+.hero{
+  position: relative;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-
+  border-radius: 20px;
+  padding: 56px 28px;
   background:
     radial-gradient(1200px 300px at 50% 120%, rgba(224,59,0,0.25), transparent 60%),
     linear-gradient(90deg,#FF7A1A,#FFD44E,#E03B00);
-
 }
 
 }
