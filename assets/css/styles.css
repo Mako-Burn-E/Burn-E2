@@ -105,6 +105,96 @@ a{color:var(--flame-yellow);text-decoration:none}
 }
 .btn-secondary:hover{background:rgba(255,122,26,.08);box-shadow:0 0 22px 4px rgba(255,122,26,.6)}
 
+/* === BURN-E CTA ANIMATIONS === */
+
+/* Primary = molten pulse + quick sheen */
+.btn-primary {
+  position: relative;
+  isolation: isolate; /* keep sheen inside radius */
+  animation: burnePulse 2.6s ease-in-out infinite;
+}
+
+/* moving sheen on hover */
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255,255,255,0.18) 45%,
+    rgba(255,255,255,0.38) 50%,
+    rgba(255,255,255,0.18) 55%,
+    transparent 100%
+  );
+  transform: translateX(-140%) rotate(0.001deg);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity .2s ease;
+  opacity: 0;
+}
+.btn-primary:hover::before {
+  opacity: 1;
+  animation: sheenSweep 0.9s ease;
+}
+
+/* Secondary = ember flicker + soft glow */
+.btn-secondary {
+  position: relative;
+  isolation: isolate;
+  animation: emberFlicker 3.4s ease-in-out infinite;
+  box-shadow: 0 0 0 rgba(255,212,78,0); /* baseline */
+}
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(240px 120px at 25% 25%, rgba(255,212,78,0.18), transparent 60%),
+    radial-gradient(180px 140px at 75% 75%, rgba(255,122,26,0.12), transparent 70%);
+  filter: blur(0.2px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: .8;
+}
+
+/* Focus visibility (keyboard users) */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 3px solid rgba(255,212,78,0.85);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255,122,26,0.28);
+}
+
+/* --- Keyframes --- */
+@keyframes burnePulse {
+  0%   { box-shadow: 0 0 20px rgba(255,122,26,0.35), 0 0 0 rgba(255,212,78,0); transform: translateY(0) scale(1); }
+  45%  { box-shadow: 0 0 44px 10px rgba(255,122,26,0.60), 0 0 0 rgba(255,212,78,0.08); transform: translateY(-1px) scale(1.015); }
+  100% { box-shadow: 0 0 20px rgba(255,122,26,0.35), 0 0 0 rgba(255,212,78,0); transform: translateY(0) scale(1); }
+}
+
+@keyframes sheenSweep {
+  0%   { transform: translateX(-140%) rotate(0.001deg); }
+  100% { transform: translateX(140%) rotate(0.001deg); }
+}
+
+@keyframes emberFlicker {
+  0%, 100% { box-shadow: 0 0 16px 2px rgba(255,212,78,0.20); filter: brightness(1); }
+  25%      { box-shadow: 0 0 26px 6px rgba(255,212,78,0.32); filter: brightness(1.03); }
+  50%      { box-shadow: 0 0 38px 10px rgba(255,122,26,0.45); filter: brightness(1.06); }
+  75%      { box-shadow: 0 0 26px 6px rgba(255,212,78,0.32); filter: brightness(1.03); }
+}
+
+/* Respect user “reduced motion” */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-secondary { animation: none !important; }
+  .btn-primary::before { animation: none !important; opacity: 0 !important; }
+}
+
 /* Hero image: only shrink the robot in the top hero (not the launch section) */
 .hero .robot{
   width:100%;
