@@ -43,10 +43,15 @@ async function loadInto(panel, url) {
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
     const html = await res.text();
-    panel.innerHTML = html;
-    // Initialize FAQ accordion if this panel contains FAQ-style H4 blocks
-    initFaqAccordion(panel);
-    panel.dataset.loaded = '1';
+   panel.innerHTML = html;
+
+// ✅ Only run the accordion setup on the FAQ panel
+if (panel.id === 'panel-faq' || panel.querySelector('.faq-section')) {
+  initFaqAccordion(panel);
+}
+
+panel.dataset.loaded = '1';
+
   } catch (err) {
     console.error(err);
     // leave fallback content in place
@@ -73,9 +78,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const panel = getPanelForTab(activeTab);
     const url = activeTab.dataset.file;
     if (url && panel && panel.dataset.loaded !== '1') {
-      await loadInto(panel, url);
+      await loadInto(panel, url); // loadInto now conditionally wires FAQ only
     }
-    // If FAQ starts active
+
+    // ✅ Only initialize accordions for the FAQ tab
     if (activeTab.id === 'tab-faq') {
       const faqPanel = document.getElementById('panel-faq');
       initFaqAccordion(faqPanel);
