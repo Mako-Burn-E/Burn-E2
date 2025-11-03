@@ -71,6 +71,36 @@ a{color:var(--flame-yellow);text-decoration:none}
   overflow:hidden;
   text-overflow:ellipsis;
 }
+/* Social buttons under hero */
+.social-row {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.social-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  font-weight:700;
+  text-decoration:none;
+  color:#fff;
+  transition:all .25s ease;
+}
+.social-btn svg { display:block; }
+.social-btn span { line-height:1; }
+
+/* Brand colors */
+.social-btn.x       { background:#000; }
+.social-btn.discord { background:#5865F2; }
+.social-btn.telegram{ background:#0088CC; }
+
+/* Hover glow effects */
+.social-btn.x:hover       { box-shadow:0 0 16px 4px rgba(255,255,255,0.4); transform:translateY(-2px); }
+.social-btn.discord:hover { box-shadow:0 0 16px 4px rgba(88,101,242,0.5); transform:translateY(-2px); }
+.social-btn.telegram:hover{ box-shadow:0 0 16px 4px rgba(0,136,204,0.5); transform:translateY(-2px); }
 
 /* CTA buttons (kept as-is, included here for completeness) */
 .cta-row{
