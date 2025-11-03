@@ -34,10 +34,17 @@ a{color:var(--flame-yellow);text-decoration:none}
 
 /* Hero */
 .hero{
-  position:relative;overflow:hidden;border-radius:20px;padding:56px 28px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
   background:
     radial-gradient(1200px 300px at 50% 120%, rgba(224,59,0,0.25), transparent 60%),
     linear-gradient(90deg,#FF7A1A,#FFD44E,#E03B00);
+
+}
+
 }
 .hero-inner {
   display: grid;
