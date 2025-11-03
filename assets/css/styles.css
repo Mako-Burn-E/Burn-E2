@@ -54,7 +54,6 @@ a{color:var(--flame-yellow);text-decoration:none}
   transform: translateX(-4%); /* moves all content slightly left */
 }
 
-
 .hero h1{
   font-family:'Anton','Inter',sans-serif;
   font-size:clamp(44px,6vw,96px);
@@ -68,7 +67,7 @@ a{color:var(--flame-yellow);text-decoration:none}
   color:#1E1A1F;
   font-weight:600;
   letter-spacing:.5px;
-  white-space:nowrap;          /* keep on one line */
+  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
@@ -162,8 +161,8 @@ a{color:var(--flame-yellow);text-decoration:none}
 }
 /* === CTA VISIBILITY BOOST: Grab some $BURN-E === */
 .btn-secondary {
-  background: rgba(20, 18, 20, 0.25); /* darkens behind text slightly */
-  border: 1.5px solid rgba(255, 212, 78, 0.6); /* richer gold edge */
+  background: rgba(20, 18, 20, 0.25);
+  border: 1.5px solid rgba(255, 212, 78, 0.6);
   color: var(--flame-yellow);
   text-shadow:
     0 0 6px rgba(255, 212, 78, 0.7),
@@ -222,7 +221,7 @@ a{color:var(--flame-yellow);text-decoration:none}
 .hero .robot{
   width:100%;
   height:auto;
-  max-width:75%;               /* ~25% smaller as requested */
+  max-width:75%;
   border-radius:18px;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.2));
   padding:10px;
@@ -242,7 +241,15 @@ a{color:var(--flame-yellow);text-decoration:none}
 .meta{color:var(--ash-gray);font-size:14px}
 
 /* Ember path */
-.path{position:relative;margin:28px auto 0;height:6px;background:linear-gradient(90deg,rgba(255,122,26,.18),rgba(224,59,0,.22));border-radius:999px;overflow:hidden}
+.path{
+  position:relative;
+  margin:28px auto 0;
+  height:6px;
+  background:linear-gradient(90deg,rgba(255,122,26,.18),rgba(224,59,0,.22));
+  border-radius:999px;
+  overflow:hidden;
+  pointer-events:none; /* ⬅ ensure it never blocks clicks */
+}
 .path::after{content:"";position:absolute;inset:0;background:radial-gradient(30px 30px at var(--x,0%) 50%, var(--path-flame), transparent 70%);animation:travel 4s linear infinite}
 @keyframes travel{0%{--x:0%}100%{--x:100%}}
 
@@ -272,10 +279,17 @@ section{margin:56px 0}
 .tablist button:hover{transform:translateY(-1px);box-shadow:0 0 16px var(--ember-glow);background:rgba(255,212,78,.1)}
 .tablist button[aria-selected="true"]{background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));color:#1E1A1F;border-color:transparent}
 
-.tabpanel{display:none;padding:16px;border:1px solid var(--card-border);border-top:0;border-radius:0 12px 12px 12px;background:var(--obsidian-brown)}
-.tabpanel.active{display:block}
+/* ⬇ NEW: panels are visible by default; hidden via [hidden] */
+.tabpanel{
+  display:block;
+  padding:16px;
+  border:1px solid var(--card-border);
+  border-top:0;
+  border-radius:0 12px 12px 12px;
+  background:var(--obsidian-brown);
+}
+.tabpanel[hidden]{display:none !important;}
 
-/* Prose readability */
 .tabpanel.prose{line-height:1.7;font-size:15.5px;color:var(--ash-gray);text-align:left;padding:18px 22px;max-width:800px;margin:0 auto}
 .tabpanel.prose h3,.tabpanel.prose h4{color:var(--flame-yellow);font-weight:800;margin-top:24px;margin-bottom:8px;line-height:1.2}
 .tabpanel.prose h3::after{content:"";display:block;margin-top:8px;width:80px;height:2px;background:linear-gradient(90deg,var(--ember-orange),transparent);border-radius:999px;opacity:.6}
@@ -336,7 +350,7 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
 .fab.ghost{background:rgba(0,0,0,.35);color:var(--flame-yellow)}
 
 /* Sparks canvas always behind */
-#sparks{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
+#sparks{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:-1} /* ⬅ set behind content */
 
 /* === HERO TAGLINE EMBER SHIMMER === */
 .hero p.tag {
@@ -390,7 +404,6 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* Gently shrink on wider screens to keep it one line */
   font-size: clamp(14px, 1.6vw, 18px);
 }
 
@@ -409,13 +422,13 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
     justify-content: center;
     align-items: center;
     gap: 10px;
-    flex-wrap: nowrap;         /* single line */
-    overflow: visible;         /* no wrap/scroll needed on desktop */
+    flex-wrap: nowrap;
+    overflow: visible;
   }
   .tabs .tablist button {
-    flex: 0 0 auto;            /* don’t shrink */
-    min-width: auto;           /* remove large minimums */
-    padding: 10px 12px;        /* a hair tighter so all four fit */
-    font-size: 14.5px;         /* slightly smaller for fit */
+    flex: 0 0 auto;
+    min-width: auto;
+    padding: 10px 12px;
+    font-size: 14.5px;
   }
 }
