@@ -33,7 +33,7 @@ a{color:var(--flame-yellow);text-decoration:none}
 .nav-cta{background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));color:#1E1A1F;padding:10px 14px;border-radius:10px;font-weight:800}
 
 /* Hero */
-.hero{
+.hero p.tag {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
