@@ -401,3 +401,21 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
     letter-spacing: 0.1px;
   }
 }
+
+/* --- Tabs: force single line at desktop --- */
+@media (min-width: 961px) {
+  .tabs .tablist {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;         /* single line */
+    overflow: visible;         /* no wrap/scroll needed on desktop */
+  }
+  .tabs .tablist button {
+    flex: 0 0 auto;            /* don’t shrink */
+    min-width: auto;           /* remove large minimums */
+    padding: 10px 12px;        /* a hair tighter so all four fit */
+    font-size: 14.5px;         /* slightly smaller for fit */
+  }
+}
