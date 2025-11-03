@@ -315,6 +315,43 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
 /* Sparks canvas always behind */
 #sparks{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:0}
 
+/* === HERO TAGLINE EMBER SHIMMER === */
+.hero p.tag {
+  position: relative;
+  display: inline-block;
+  animation: taglinePulse 3.2s ease-in-out infinite;
+  text-shadow: 0 0 8px rgba(255,212,78,0.3),
+               0 0 16px rgba(255,122,26,0.25),
+               0 0 24px rgba(224,59,0,0.2);
+}
+
+.hero p.tag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg,
+    transparent 0%,
+    rgba(255,255,255,0.18) 45%,
+    rgba(255,255,255,0.38) 50%,
+    rgba(255,255,255,0.18) 55%,
+    transparent 100%);
+  mix-blend-mode: screen;
+  animation: taglineSheen 5.6s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: 6px;
+}
+
+@keyframes taglinePulse {
+  0%, 100% { filter: brightness(1); text-shadow: 0 0 8px rgba(255,212,78,0.3), 0 0 16px rgba(255,122,26,0.25); }
+  50% { filter: brightness(1.08); text-shadow: 0 0 12px rgba(255,212,78,0.45), 0 0 26px rgba(255,122,26,0.4); }
+}
+
+@keyframes taglineSheen {
+  0% { transform: translateX(-150%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(150%); opacity: 0; }
+}
+
 /* Responsive */
 @media (max-width:960px){
   .hero-inner{grid-template-columns:1fr}
