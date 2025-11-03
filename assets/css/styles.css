@@ -405,22 +405,197 @@ section{margin:56px 0}
 footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
 .small{font-size:12px}
 
-/* Modal (email signup) */
-.modal-backdrop{position:fixed;inset:0;background:radial-gradient(1200px 600px at 50% 60%, rgba(255,122,26,0.08), transparent 60%), rgba(5,5,7,0.60);display:none;align-items:center;justify-content:center;z-index:200}
-.modal-backdrop[hidden]{display:none}
-.modal.burne{position:relative;width:min(92vw,440px);background:rgba(18,16,20,.96);color:#fff;border-radius:16px;padding:26px 24px 22px;box-shadow:0 0 22px rgba(255,122,26,.35), inset 0 0 0 1px rgba(255,200,120,.15)}
-.modal-close{position:absolute;top:8px;right:10px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,200,120,.4);background:rgba(30,26,31,.6);color:#FFD48A;font-size:20px;line-height:28px;cursor:pointer}
-.modal-aura{position:absolute;inset:10px;border-radius:12px;pointer-events:none;background: radial-gradient(280px 180px at 70% 10%, rgba(255,200,120,0.10), transparent 60%), radial-gradient(360px 200px at 30% 90%, rgba(255,122,26,0.10), transparent 60%)}
-.modal-head{text-align:center;margin-bottom:10px}
-.modal-head .flame{filter:drop-shadow(0 0 8px rgba(255,122,26,.6))}
-.modal-head h3{margin:8px 0 4px;font-size:22px;font-weight:900;letter-spacing:.2px;color:var(--flame-yellow)}
-.modal-head .subtitle{margin:0;color:var(--ash-gray);font-size:14.5px}
-.field{display:flex;flex-direction:column;gap:6px;margin:14px 0 16px}
-.field label{font-size:12px;color:#CFCAD5}
-.field input{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,200,120,.25);background:rgba(12,10,13,.9);color:#fff}
-.btn-ember{width:100%;padding:12px 16px;border-radius:12px;border:0;font-weight:900;font-size:15.5px;cursor:pointer;color:#1E1A1F;background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));box-shadow:0 0 22px 4px rgba(255,122,26,.45)}
-.trust{text-align:center;font-size:12.5px;color:#CFCAD5}
-.trust a{color:var(--flame-yellow);text-decoration:underline}
+/* =========================================================
+   🔥 BURN-E Email Signup Modal (finalized)
+   ========================================================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 600px at 50% 60%, rgba(255,122,26,0.08), transparent 60%),
+    rgba(5, 5, 7, 0.60);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* Active animation class added by JS */
+.modal-backdrop.open {
+  display: flex !important;
+  opacity: 1;
+}
+
+.modal.burne {
+  position: relative;
+  width: min(92vw, 440px);
+  background: rgba(18, 16, 20, 0.96);
+  color: #fff;
+  border-radius: 16px;
+  padding: 26px 24px 22px;
+  box-shadow:
+    0 0 22px rgba(255,122,26,0.35),
+    inset 0 0 0 1px rgba(255,200,120,0.15);
+  transform: scale(0.96);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animate pop-in */
+.modal-backdrop.open .modal.burne {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Aura background */
+.modal-aura {
+  position: absolute;
+  inset: 10px;
+  border-radius: 12px;
+  pointer-events: none;
+  background:
+    radial-gradient(280px 180px at 70% 10%, rgba(255,200,120,0.10), transparent 60%),
+    radial-gradient(360px 200px at 30% 90%, rgba(255,122,26,0.10), transparent 60%);
+}
+
+/* Header */
+.modal-head {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.modal-head .flame {
+  filter: drop-shadow(0 0 8px rgba(255,122,26,0.6));
+}
+.modal-head h3 {
+  margin: 8px 0 4px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: var(--flame-yellow);
+}
+.modal-head .subtitle {
+  margin: 0;
+  color: var(--ash-gray);
+  font-size: 14.5px;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,200,120,0.4);
+  background: rgba(30,26,31,0.6);
+  color: #FFD48A;
+  font-size: 20px;
+  line-height: 28px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.modal-close:hover,
+.modal-close:focus-visible {
+  background: rgba(30,26,31,0.8);
+  box-shadow: 0 0 0 3px rgba(255,212,78,0.25);
+}
+
+/* Input fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 14px 0 16px;
+}
+.field label {
+  font-size: 12px;
+  color: #CFCAD5;
+}
+.field input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,200,120,0.25);
+  background: rgba(12,10,13,0.9);
+  color: #fff;
+  transition: all 0.2s ease;
+}
+.field input:focus-visible {
+  outline: 2px solid rgba(255,212,78,0.75);
+  box-shadow: 0 0 0 4px rgba(255,122,26,0.25);
+}
+.field input[aria-invalid="true"],
+.field input:invalid:focus {
+  border-color: rgba(224,59,0,0.75);
+  box-shadow: 0 0 0 4px rgba(224,59,0,0.20);
+}
+
+/* Submit button */
+.btn-ember {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 0;
+  font-weight: 900;
+  font-size: 15.5px;
+  cursor: pointer;
+  color: #1E1A1F;
+  background: linear-gradient(90deg, var(--ember-orange), var(--flame-yellow));
+  box-shadow: 0 0 22px 4px rgba(255,122,26,0.45);
+  transition: all 0.25s ease;
+}
+.btn-ember:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px 6px rgba(255,122,26,0.55);
+}
+.btn-ember:disabled,
+.btn-ember.is-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: saturate(0.85);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Trust line + links */
+.trust {
+  text-align: center;
+  font-size: 12.5px;
+  color: #CFCAD5;
+  margin-top: 6px;
+}
+.trust a {
+  color: var(--flame-yellow);
+  text-decoration: underline;
+}
+
+/* Status message line */
+#signupStatus {
+  min-height: 18px;
+  margin-top: 8px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--ash-gray);
+}
+#signupStatus.success {
+  color: var(--flame-yellow);
+}
+#signupStatus.error {
+  color: var(--ember-orange);
+}
+
+/* Responsive: slightly shrink modal on small screens */
+@media (max-width: 480px) {
+  .modal.burne {
+    padding: 22px 18px 20px;
+  }
+  .modal-head h3 {
+    font-size: 20px;
+  }
+}
+
 
 /* FABs */
 .fab-wrap{position:fixed;right:14px;bottom:14px;display:grid;gap:10px;z-index:120}
