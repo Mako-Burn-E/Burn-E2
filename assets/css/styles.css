@@ -43,10 +43,9 @@ a{color:var(--flame-yellow);text-decoration:none}
     linear-gradient(90deg,#FF7A1A,#FFD44E,#E03B00);
 }
 
-}
-.hero-inner {
+.hero-inner{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;   /* equal columns for perfect centering */
   gap: 28px;
   align-items: center;
   justify-content: center;
@@ -54,14 +53,72 @@ a{color:var(--flame-yellow);text-decoration:none}
   max-width: 1200px;
 }
 
-.hero h1{font-family:'Anton','Inter',sans-serif;font-size:clamp(44px,6vw,96px);line-height:.95;margin:0 0 12px;color:#1E1A1F}
-.hero p.tag{margin:6px 0 0;color:#1E1A1F;font-weight:600;letter-spacing:.5px}
-.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-.btn-primary{background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));color:#1E1A1F;padding:14px 18px;border:none;border-radius:12px;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.hero h1{
+  font-family:'Anton','Inter',sans-serif;
+  font-size:clamp(44px,6vw,96px);
+  line-height:.95;
+  margin:0 0 12px;
+  color:#1E1A1F;
+}
+
+.hero p.tag{
+  margin:6px 0 0;
+  color:#1E1A1F;
+  font-weight:600;
+  letter-spacing:.5px;
+  white-space:nowrap;          /* keep on one line */
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* CTA buttons (kept as-is, included here for completeness) */
+.cta-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.btn-primary{
+  background:linear-gradient(90deg,var(--ember-orange),var(--flame-yellow));
+  color:#1E1A1F;
+  padding:14px 18px;
+  border:none;
+  border-radius:12px;
+  font-weight:800;
+  letter-spacing:.3px;
+  cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 28px 6px rgba(255,122,26,.6)}
-.btn-secondary{background:transparent;border:1px solid var(--ember-orange);color:var(--flame-yellow);text-shadow:0 0 6px rgba(255,122,26,.9);padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer;transition:background .2s ease,box-shadow .2s ease}
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--ember-orange);
+  color:var(--flame-yellow);
+  text-shadow:0 0 6px rgba(255,122,26,.9);
+  padding:12px 16px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .2s ease,box-shadow .2s ease;
+}
 .btn-secondary:hover{background:rgba(255,122,26,.08);box-shadow:0 0 22px 4px rgba(255,122,26,.6)}
-.robot{width:100%;height:auto;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.2));padding:10px;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+
+/* Hero image: only shrink the robot in the top hero (not the launch section) */
+.hero .robot{
+  width:100%;
+  height:auto;
+  max-width:75%;               /* ~25% smaller as requested */
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.2));
+  padding:10px;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+
+/* Mobile: stack nicely */
+@media (max-width:960px){
+  .hero-inner{ grid-template-columns:1fr; }
+  .hero .robot{ max-width:360px; margin:0 auto; }
+}
 
 /* KPI panels under hero */
 .panels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
