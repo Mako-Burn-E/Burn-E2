@@ -511,3 +511,19 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
     font-size: 14.5px;
   }
 }
+/* --- Social Divider (below Burn Tracker) --- */
+.social-divider {
+  width: 100%;
+  max-width: 800px;
+  height: 2px;
+  margin: 40px auto 20px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 122, 26, 0.0),
+    rgba(255, 212, 78, 0.45),
+    rgba(255, 122, 26, 0.0)
+  );
+  box-shadow: 0 0 12px rgba(255, 122, 26, 0.3);
+  border-radius: 999px;
+}
