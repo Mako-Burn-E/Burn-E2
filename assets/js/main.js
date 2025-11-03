@@ -241,34 +241,107 @@ function closeItem(item) {
   draw();
 })();
 
-// --- Email signup modal
+// --- Email signup modal (30s initial, 3m follow-up, max 2 shows per session) ---
 const signupBackdrop = document.getElementById('signupBackdrop');
 const signupClose = document.getElementById('signupClose');
 const signupNotNow = document.getElementById('signupNotNow');
 const signupForm = document.getElementById('signupForm');
 
-// Show modal after slight delay (only once per session)
-setTimeout(() => {
+const INITIAL_DELAY_MS  = 30_000;   // 30 seconds
+const FOLLOWUP_DELAY_MS = 180_000;  // 3 minutes
+
+// storage keys for this session
+const KEY_DISMISS_COUNT   = 'burne_signup_dismiss_count';      // "0", "1", "2"
+const KEY_LAST_DISMISS_MS = 'burne_signup_last_dismiss_ms';    // timestamp ms
+const KEY_FOLLOWUP_DONE   = 'burne_signup_followup_done';      // "1" once scheduled/shown
+
+function getDismissCount() {
+  return Number(sessionStorage.getItem(KEY_DISMISS_COUNT) || '0');
+}
+
+function setDismissCount(n) {
+  sessionStorage.setItem(KEY_DISMISS_COUNT, String(n));
+}
+
+function showSignup() {
   if (!signupBackdrop) return;
-  if (sessionStorage.getItem('burne_signup_dismissed') === '1') return;
+  // Do not show if already dismissed twice
+  if (getDismissCount() >= 2) return;
+
+  // Reveal with animation class if your CSS supports it
   signupBackdrop.hidden = false;
+  signupBackdrop.classList.add('open'); // matches the CSS animation we discussed
+  // Fallback (in case you didn't add the animation CSS):
   signupBackdrop.style.display = 'flex';
-}, 1200);
+}
 
 function closeSignup() {
   if (!signupBackdrop) return;
+
+  // Hide (with fade-out if you kept the .open CSS)
+  signupBackdrop.classList.remove('open');
+  setTimeout(() => { signupBackdrop.hidden = true; }, 200);
   signupBackdrop.style.display = 'none';
-  signupBackdrop.hidden = true;
-  sessionStorage.setItem('burne_signup_dismissed', '1');
+
+  // Track dismissals in this session
+  const next = getDismissCount() + 1;
+  setDismissCount(next);
+  sessionStorage.setItem(KEY_LAST_DISMISS_MS, String(Date.now()));
+
+  // After first dismissal, schedule exactly one follow-up within 3 minutes
+  if (next === 1) {
+    // reset follow-up flag so we can schedule it now
+    sessionStorage.removeItem(KEY_FOLLOWUP_DONE);
+    scheduleFollowupIfNeeded();
+  }
+  // After second dismissal, do nothing else (no more popups this session)
 }
+
+function scheduleInitial() {
+  if (!signupBackdrop) return;
+  if (getDismissCount() >= 2) return; // user already dismissed twice
+  setTimeout(showSignup, INITIAL_DELAY_MS);
+}
+
+function scheduleFollowupIfNeeded() {
+  if (!signupBackdrop) return;
+
+  // Only if dismissed exactly once and we haven't already done the follow-up
+  if (getDismissCount() !== 1) return;
+  if (sessionStorage.getItem(KEY_FOLLOWUP_DONE) === '1') return;
+
+  const last = Number(sessionStorage.getItem(KEY_LAST_DISMISS_MS) || '0');
+  const elapsed = Date.now() - last;
+
+  // If user reloaded, we honor remaining time; never negative
+  const delay = Math.max(FOLLOWUP_DELAY_MS - Math.max(elapsed, 0), 0);
+
+  setTimeout(() => {
+    // Check again right before showing (user might have dismissed again elsewhere)
+    if (getDismissCount() === 1 && sessionStorage.getItem(KEY_FOLLOWUP_DONE) !== '1') {
+      showSignup();
+      sessionStorage.setItem(KEY_FOLLOWUP_DONE, '1');
+    }
+  }, delay);
+}
+
+// Wire close buttons
 signupClose?.addEventListener('click', closeSignup);
 signupNotNow?.addEventListener('click', closeSignup);
 
-// Fake submit (replace with your API call)
-signupForm?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('signupEmail')?.value || '';
-  console.log('Signup email:', email);
-  closeSignup();
-  alert('🔥 Subscribed! You’re on the list.');
+// Kickoff on load:
+// 1) Schedule the initial 30s popup if user hasn't dismissed twice.
+// 2) If they already dismissed once this session, schedule the 3-minute follow-up (with remainder if reloaded).
+document.addEventListener('DOMContentLoaded', () => {
+  const dismisses = getDismissCount();
+
+  if (dismisses < 2) {
+    scheduleInitial();
+  }
+
+  if (dismisses === 1) {
+    scheduleFollowupIfNeeded();
+  }
 });
+
+// (Keep your existing submit handler below; it can still call closeSignup() on success.)
