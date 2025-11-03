@@ -527,3 +527,50 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
   box-shadow: 0 0 12px rgba(255, 122, 26, 0.3);
   border-radius: 999px;
 }
+/* --- Socials below the Burn Tracker (hardened) --- */
+#live .social-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+#live .social-row .social-btn {
+  /* reset common button/link noise from other sections */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 0;
+  text-decoration: none;
+  line-height: 1;
+  font-weight: 700;
+  box-shadow: none;
+  transform: translateY(0);
+  transition: box-shadow .25s ease, transform .25s ease, opacity .25s ease;
+  color: #fff;                 /* icons use currentColor */
+}
+
+#live .social-row .social-btn svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;          /* match text color */
+}
+
+/* brand colors (locked) */
+#live .social-row .social-btn.x        { background: #000000; }
+#live .social-row .social-btn.discord  { background: #5865F2; }
+#live .social-row .social-btn.telegram { background: #0088CC; }
+
+/* hover glows (locked) */
+#live .social-row .social-btn.x:hover        { box-shadow: 0 0 16px 4px rgba(255,255,255,0.40); transform: translateY(-2px); }
+#live .social-row .social-btn.discord:hover  { box-shadow: 0 0 16px 4px rgba(88,101,242,0.50); transform: translateY(-2px); }
+#live .social-row .social-btn.telegram:hover { box-shadow: 0 0 16px 4px rgba(0,136,204,0.50); transform: translateY(-2px); }
+
+/* optional: reduce glow on very small screens */
+@media (max-width: 420px) {
+  #live .social-row .social-btn:hover { box-shadow: none; transform: translateY(-1px); }
+}
