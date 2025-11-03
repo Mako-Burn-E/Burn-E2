@@ -28,41 +28,49 @@
 
   <div class="wrap">
     <!-- HERO -->
-    <header class="hero" id="top">
-      <div class="hero-inner">
-        <div>
-          <h1>Light it. Burn it. Earn it.</h1>
-          <p class="tag"><strong>$BURN-E</strong> From 1B to 23M. The legend of deflation begins.</p>
+   <header class="hero" id="top">
+  <div class="hero-inner">
+    <!-- LEFT: Burn-E image -->
+    <div>
+      <img class="robot" alt="$BURN-E robot" src="assets/img/robot-hero.png" />
+    </div>
 
-          <div class="cta-row">
-            <a class="btn-primary" id="launchBtn" href="#" target="_blank" rel="noopener">Launch dApp</a>
-            <a class="btn-secondary" id="buyBtn" href="#" target="_blank" rel="noopener">Grab $BURN-E</a>
-          </div>
+    <!-- RIGHT: Tagline + CTAs + KPIs -->
+    <div>
+      <!-- Force single line + slightly smaller clamp to avoid wrapping -->
+      <h1 style="white-space: nowrap; font-size: clamp(34px, 5.2vw, 64px); line-height: 1;">
+        Light it. Burn it. Earn it.
+      </h1>
 
-          <div class="panels">
-            <div class="panel">
-              <h3>Supply Start</h3>
-              <div class="meta" id="kpiStart">1,000,000,000</div>
-            </div>
-            <div class="panel">
-              <h3>End Goal</h3>
-              <div class="meta" id="kpiGoal">23,000,000</div>
-            </div>
-            <div class="panel">
-              <h3>Current Supply</h3>
-              <div class="meta" id="currentSupply">—</div>
-            </div>
-          </div>
+      <p class="tag">
+        <strong>$BURN-E</strong> From 1B to 23M. The legend of deflation begins.
+      </p>
 
-          <div class="path" aria-hidden="true"></div>
+      <div class="cta-row">
+        <a class="btn-primary" id="launchBtn" href="#" target="_blank" rel="noopener">Launch dApp</a>
+        <a class="btn-secondary" id="buyBtn" href="#" target="_blank" rel="noopener">Grab $BURN-E</a>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <h3>Supply Start</h3>
+          <div class="meta" id="kpiStart">1,000,000,000</div>
         </div>
-
-        <div>
-          <!-- Keep aspect ratio, don’t shrink weirdly -->
-          <img class="robot" alt="$BURN-E robot" src="assets/img/robot-hero.png" />
+        <div class="panel">
+          <h3>End Goal</h3>
+          <div class="meta" id="kpiGoal">23,000,000</div>
+        </div>
+        <div class="panel">
+          <h3>Current Supply</h3>
+          <div class="meta" id="currentSupply">—</div>
         </div>
       </div>
-    </header>
+
+      <div class="path" aria-hidden="true"></div>
+    </div>
+  </div>
+</header>
+
 
     <!-- PLAYBOOK -->
     <section id="docs">
