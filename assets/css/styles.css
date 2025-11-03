@@ -316,11 +316,60 @@ section{margin:56px 0}
 .badge{display:inline-block;margin-left:10px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800;vertical-align:middle;border:1px solid var(--card-border)}
 .badge-prelaunch{background:rgba(255,212,78,.12);color:var(--flame-yellow);box-shadow:0 0 12px rgba(255,122,26,.25)}
 
-/* Launch section width parity */
-#launch{width:100%;max-width:1200px;margin:0 auto}
-.launch-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:24px;align-items:center}
-.launch-inner{max-width:720px}
-#launch .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+/* Launch section (contained inside the background card) */
+#launch { 
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Make the card the visual container */
+#launch .card {
+  position: relative;
+  overflow: hidden; /* <-- keeps everything inside the launch background */
+  background:
+    radial-gradient(800px 400px at 70% 50%, rgba(255,122,26,0.06), transparent 70%),
+    var(--obsidian-brown);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+/* Grid layout for text + image */
+#launch .launch-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  align-items: center;
+}
+
+#launch .launch-inner { 
+  max-width: 720px;
+}
+
+/* Button row */
+#launch .cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+/* Constrain the robot image so it never looks massive */
+#launch .robot {
+  display: block;
+  width: 100%;
+  max-width: 420px;  /* tweak: 360–520px based on taste */
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+
+/* Mobile stacking */
+@media (max-width: 960px) {
+  #launch .launch-grid { grid-template-columns: 1fr; }
+  #launch .robot { max-width: 360px; margin-top: 12px; }
+}
 
 /* Footer */
 footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
