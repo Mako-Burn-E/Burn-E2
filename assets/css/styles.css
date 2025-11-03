@@ -43,15 +43,17 @@ a{color:var(--flame-yellow);text-decoration:none}
     linear-gradient(90deg,#FF7A1A,#FFD44E,#E03B00);
 }
 
-.hero-inner{
+.hero-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;   /* equal columns for perfect centering */
+  grid-template-columns: 1fr 1fr;
   gap: 28px;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   max-width: 1200px;
+  transform: translateX(-4%); /* moves all content slightly left */
 }
+
 
 .hero h1{
   font-family:'Anton','Inter',sans-serif;
