@@ -749,3 +749,135 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
 @media (max-width: 420px) {
   #live .social-row .social-btn:hover { box-shadow: none; transform: translateY(-1px); }
 }
+/* =========================================
+   Mobile Optimizations (desktop unchanged)
+   ========================================= */
+@media (max-width: 768px) {
+  /* Global rhythm */
+  .wrap { padding: 18px; }
+  section { margin: 42px 0; }
+
+  /* Hero */
+  .hero { padding: 36px 18px; }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr; /* stack */
+    gap: 18px;
+    transform: none;           /* undo desktop nudge */
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 7vw, 36px);
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .hero p.tag {
+    font-size: 14px;
+    white-space: normal; /* allow wrap on small screens */
+  }
+  .hero .robot {
+    max-width: 320px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  /* CTAs */
+  .cta-row {
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  /* KPI panels under hero */
+  .panels {
+    grid-template-columns: 1fr; /* 1 per row on small screens */
+    gap: 12px;
+    text-align: left;
+  }
+  .panel h3 { margin-bottom: 4px; }
+  .meta { font-size: 13px; }
+
+  /* Social block under KPIs */
+  .social-divider { 
+    margin: 14px 0 10px; 
+    border: none; 
+    height: 1px; 
+    background: rgba(255,212,78,0.25);
+  }
+  .social-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: stretch;
+  }
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .social-btn svg { width: 16px; height: 16px; }
+
+  /* Tabs: keep all four accessible on one row with scroll */
+  .tablist {
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+  }
+  .tablist button {
+    min-width: 180px;
+    scroll-snap-align: start;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .tabpanel.prose {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  /* Burn Ledger KPIs */
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (max-width: 420px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Ledger layout stacks */
+  .ledger-grid { grid-template-columns: 1fr; gap: 14px; }
+  .ledger td, .ledger th { padding: 8px; font-size: 13px; }
+
+  /* Launch section: stack, constrain image */
+  #launch .card.launch-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* stack */
+    gap: 16px;
+  }
+  .launch-inner { max-width: none; text-align: center; }
+  #launch .robot {
+    max-width: 320px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  /* Footer spacing */
+  footer { margin: 36px 0 16px; }
+}
+
+/* Extra-tight phones */
+@media (max-width: 360px) {
+  .tablist button { min-width: 160px; }
+  .btn-primary, .btn-secondary { font-size: 13px; padding: 10px 12px; }
+  .social-row { grid-template-columns: 1fr 1fr; } /* 2-up if super narrow */
+}
