@@ -881,3 +881,10 @@ footer{margin:50px 0 20px;color:var(--ash-gray);text-align:center}
   .btn-primary, .btn-secondary { font-size: 13px; padding: 10px 12px; }
   .social-row { grid-template-columns: 1fr 1fr; } /* 2-up if super narrow */
 }
+/* Hide top nav Launch button on mobile */
+@media (max-width: 768px) {
+  .nav-links .nav-cta {
+    display: none !important;
+  }
+}
+
